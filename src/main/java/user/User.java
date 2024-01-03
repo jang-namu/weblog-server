@@ -1,0 +1,26 @@
+package user;
+
+import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
+import post.Post;
+
+import java.util.List;
+
+@Entity
+@NoArgsConstructor
+public class User {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String loginId;
+    @Column(nullable = false)
+    private String password;
+    @Column(nullable = false)
+    private String nickname;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
+    private List<Post> posts;
+
+}
