@@ -17,9 +17,10 @@ public class PostController {
      *  매개변수 : PostRequest postRequest
      *  리턴형 : void
      *  함수 설명:
-     *   - Extension 에서 Server 로 전송한 post data 를 저장
+     *   - Front-End 에서 전송한 Post 정보를 수신하여 Server DB 에 저장
      * */
     @PostMapping("/post")
     public void savePost(@RequestParam PostRequest postRequest ){
+
     }
 }
