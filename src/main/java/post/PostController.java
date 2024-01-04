@@ -19,13 +19,21 @@ public class PostController {
     private final static String tokenHeader = "token";
 
     /**
-     *  함수명 : savePost
-     *  매개변수 : PostRequest postRequest
-     *  리턴형 : ResponseEntity<Void>
-     *  함수 설명:
-     *   - Front-End 에서 전송한 Post 정보를 수신하여 Server DB 에 저장
-     *   - 저장 성공 : 200 ok
-     *   - 저장 실패 : 404 error
+     *  Name : savePost
+     *  Parameter :
+     *   - PostRequest postRequest : Server 에 저장할 Post
+     *  Return :
+     *   - ResponseEntity<Void> :
+     *     - Success : 200 ok
+     *     - Failed : error
+     *
+     *  Explanation :
+     *   - post 저장 요청 수신
+     *   - 요청 처리 결과 반환
+     *
+     *   Scenario :
+     *    - 1. extension 에서 저장 요청
+     *    - 2. weblog page 에서 저장 요청
      * */
     @PostMapping("/post")
     public ResponseEntity<Void> savePost(@RequestParam PostRequest postRequest ){
@@ -35,27 +43,48 @@ public class PostController {
     // Todo: 시나리오에 맞는 다양한 매개변수 사용
 
     /**
-     *  함수명 : getPost
-     *  매개변수 : String token
-     *  리턴형 : ResponseEntity<PostResponse>
-     *  함수 설명:
-     *   - Front-End 에서 요청한 Post 하나를 전송함.
+     *  Name : getPost
+     *  Parameter :
+     *   - String token : 사용자 인증
+     *   - Long postId : 확인 요청한 post
+     *  Return :
+     *   - ResponseEntity<Post> :
+     *     - Success : 200 ok && Post
+     *     - Failed : error
+     *
+     *  Explanation :
+     *   - 특정 post 에 대한 접근 요청 수신
+     *   - 응답 반환
+     *
+     *  Scenario :
+     *   - 1. post 목록에서 post Click
+     *   - 2. post_id 로 post 검색
      * */
     @GetMapping("/post")
-    public ResponseEntity<PostResponse> getPost(@RequestHeader()String token){
+    public ResponseEntity<PostResponse> getPost(@RequestHeader()String token, @RequestParam Long postId){
         // Todo : 수정
         return ResponseEntity.ok().build();
     }
 
     /**
-     *  함수명 : getPosts
-     *  매개변수 : String token
-     *  리턴형 : ResponseEntity<ArrayList<PostResponse>>
-     *  함수 설명:
-     *   - Front-End 에서 요청한 Post 목록을 전송함.
+     *  Name : getPosts
+     *  Parameter :
+     *   - String token : 사용자 인증
+     *   - String url: web page 주소
+     *  Return :
+     *   - ResponseEntity<ArrayList<Post>> :
+     *     - Success : 200 ok && ArrayList<Post>
+     *     - Failed : error
+     *
+     *  Explanation :
+     *   - 특정 web page 에 있는 모든 post 에 대한 접근 요청 수신
+     *   - 응답 반환
+     *
+     *  Scenario :
+     *   - 1. extension 에서 post 보기 요청
      * */
     @GetMapping("/post")
-    public ResponseEntity<ArrayList<PostResponse>> getPosts(@RequestHeader()String token){
+    public ResponseEntity<ArrayList<PostResponse>> getPosts(@RequestHeader()String token, @RequestHeader() String url){
         // Todo : 수정
         return ResponseEntity.ok().build();
     }
