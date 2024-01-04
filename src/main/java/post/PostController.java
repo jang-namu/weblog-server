@@ -42,10 +42,10 @@ public class PostController {
 
     // Todo: 시나리오에 맞는 다양한 매개변수 사용
 
+    // Todo : RequestHeader 내용 수정 : @RequestHeader({Header Field Name})
     /**
      *  Name : getPost
      *  Parameter :
-     *   - String token : 사용자 인증
      *   - Long postId : 확인 요청한 post
      *  Return :
      *   - ResponseEntity<Post> :
@@ -61,15 +61,15 @@ public class PostController {
      *   - 2. post_id 로 post 검색
      * */
     @GetMapping("/post")
-    public ResponseEntity<PostResponse> getPost(@RequestHeader()String token, @RequestParam Long postId){
-        // Todo : 수정
+    public ResponseEntity<PostResponse> getPost(@RequestParam Long postId){
+
         return ResponseEntity.ok().build();
     }
 
+    // Todo : RequestHeader 내용 수정 : @RequestHeader({Header Field Name})
     /**
      *  Name : getPosts
      *  Parameter :
-     *   - String token : 사용자 인증
      *   - String url: web page 주소
      *  Return :
      *   - ResponseEntity<ArrayList<Post>> :
@@ -84,8 +84,8 @@ public class PostController {
      *   - 1. extension 에서 post 보기 요청
      * */
     @GetMapping("/post")
-    public ResponseEntity<ArrayList<PostResponse>> getPosts(@RequestHeader()String token, @RequestHeader() String url){
-        // Todo : 수정
+    public ResponseEntity<ArrayList<PostResponse>> getPost(@RequestHeader String url){
+
         return ResponseEntity.ok().build();
     }
 
