@@ -5,7 +5,6 @@ import com.bugflix.weblog.user.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    private final CustomUserDetailService customUserDetailService;
+    private final CustomUserDetailServiceImpl customUserDetailService;
 
     @Value("${springboot.jwt.secret.key}")
     private String secret;
@@ -41,16 +40,19 @@ public class JwtProvider {
 
 
     public String createToken(String account, List<Authority> roles) {
-        Claims claims = Jwts.claims().setSubject(account).build();
-        claims.put("roles", roles);
+
+        Claims claims = Jwts.claims()
+                .subject(account)
+                .add("roles",roles)
+                .build();
 
         Date now = new Date();
 
         String token = Jwts.builder()
-                .setClaims (claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime () + expirationTime))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .claims(claims)
+                .issuedAt(now)
+                .expiration(new Date(now.getTime () + expirationTime))
+                .signWith(secretKey)
                 .compact();
 
         return token;
