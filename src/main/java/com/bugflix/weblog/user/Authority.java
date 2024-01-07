@@ -15,7 +15,7 @@ name 필드는 권한을 나타내는 문자열이다. (Admin, User 등..)
 Authority를 따로 클래스로 뺄 필요가있을까? -> 차라리 enum을 사용한다면?
  */
 
-@Entity
+@Entity(name = "authority_tb")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Authority {

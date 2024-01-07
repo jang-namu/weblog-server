@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity
+@Entity(name="profile_tb")
 public class Profile {
 
     @Id
