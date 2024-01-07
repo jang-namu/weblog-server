@@ -1,14 +1,11 @@
-package post;
+package com.bugflix.weblog.post;
 
+import com.bugflix.weblog.post.dto.PostRequest;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import page.Page;
-import post.dto.PostRequest;
-import post.dto.PostResponse;
-import user.User;
+import com.bugflix.weblog.page.Page;
+import com.bugflix.weblog.user.User;
 
 import java.util.Date;
 
@@ -23,13 +20,13 @@ public class Post {
     @Getter
     private String content;
     @Getter
-    private Long like;
+    private String memo;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creation_date;
+    private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date update_date;
+    private Date updateDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
@@ -39,10 +36,25 @@ public class Post {
     @JoinColumn(name="page_id",nullable = false)
     private Page page;
 
-
     public Post(PostRequest postRequest){
-        title = postRequest.getTitle();;
+        title = postRequest.getTitle();
         content = postRequest.getContent();
-        like = postRequest.getLike();
+        memo = postRequest.getMemo();
+    }
+
+    public Post(PostRequest postRequest, User user, Page page){
+        this(postRequest);
+        this.user = user;
+        this.page = page;
+    }
+
+    public void updateTitle(String title){
+        this.title = title;
+    }
+    public void updateContent(String content){
+        this.content = content;
+    }
+    public void updateMemo(String memo){
+        this.memo = memo;
     }
 }
