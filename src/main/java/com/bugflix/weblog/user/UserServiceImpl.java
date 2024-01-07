@@ -33,8 +33,10 @@ public class UserServiceImpl {
         User user = userRepository.findByLoginId(signInRequest.getLoginId()).orElseThrow(() ->
                 new Exception("계정을 찾을 수 없습니다."));
 
-        if (user.getPassword().equals(passwordEncoder.encode(signInRequest.getPassword()))) {
-            userRepository.delete(user);
+        // 비밀번호 검증 로직 필요
+        if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
+            throw new Exception();
         }
+        userRepository.delete(user);
     }
 }
