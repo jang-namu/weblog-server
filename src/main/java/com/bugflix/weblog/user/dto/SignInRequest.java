@@ -1,13 +1,14 @@
-package com.bugflix.weblog.security.dto;
+package com.bugflix.weblog.user.dto;
+
 
 public class SignInRequest {
 
-    private String loginId;
+    private String email;
 
     private String password;
 
-    public String getLoginId() {
-        return loginId;
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {

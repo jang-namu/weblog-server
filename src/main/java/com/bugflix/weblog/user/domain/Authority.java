@@ -1,4 +1,4 @@
-package com.bugflix.weblog.user;
+package com.bugflix.weblog.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -15,19 +15,19 @@ name 필드는 권한을 나타내는 문자열이다. (Admin, User 등..)
 Authority를 따로 클래스로 뺄 필요가있을까? -> 차라리 enum을 사용한다면?
  */
 
-@Entity(name = "authority_tb")
 @Getter
+@Entity(name = "authority_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Authority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="authority_id")
+    @Column(name = "authority_id")
     private Long authorityId;
 
     private String name;
 
-    @JoinColumn(name="user")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
@@ -36,5 +36,7 @@ public class Authority {
         this.name = name;
     }
 
-    public void assignUser(User user) { this.user = user; }
+    public void assignUser(User user) {
+        this.user = user;
+    }
 }
