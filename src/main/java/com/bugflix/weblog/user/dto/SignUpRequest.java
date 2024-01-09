@@ -2,14 +2,14 @@ package com.bugflix.weblog.user.dto;
 
 public class SignUpRequest {
 
-    private String loginId;
+    private String email;
 
     private String password;
 
     private String nickname;
 
-    public String getLoginId() {
-        return loginId;
+    public String getEmail() {
+        return email;
     }
 
     public String getPassword() {

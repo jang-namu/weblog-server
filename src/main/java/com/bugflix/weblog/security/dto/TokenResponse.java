@@ -1,16 +1,17 @@
 package com.bugflix.weblog.security.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class TokenResponse {
-    private String token;
+    private String accessToken;
 
-    private TokenResponse(String token) {
-        this.token = token;
-    }
+    private String refreshToken;
 
-    public static TokenResponse from(String token) {
-        return new TokenResponse(token);
+    @Builder
+    private TokenResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }
