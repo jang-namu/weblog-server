@@ -20,7 +20,8 @@ public class Profile extends BaseTimeEntity {
     // CascadeTyoe.ALL ?
     // targetEntity? mappedBy?
     // 1대1 매핑 best practice?
-    @OneToOne(mappedBy = "profile")
+    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(name = "image_url")
@@ -32,5 +33,16 @@ public class Profile extends BaseTimeEntity {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    public Profile(String phoneNumber, LocalDate birthDate) {
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+    }
 
+    public void assignUser(User user) {
+        this.user = user;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

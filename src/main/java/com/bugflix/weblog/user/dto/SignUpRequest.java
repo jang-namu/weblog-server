@@ -1,5 +1,10 @@
 package com.bugflix.weblog.user.dto;
 
+import lombok.Getter;
+
+import java.time.LocalDate;
+
+@Getter
 public class SignUpRequest {
 
     private String email;
@@ -8,15 +13,8 @@ public class SignUpRequest {
 
     private String nickname;
 
-    public String getEmail() {
-        return email;
-    }
+    private String phoneNumber;
 
-    public String getPassword() {
-        return password;
-    }
+    private LocalDate birthDate;
 
-    public String getNickname() {
-        return nickname;
-    }
 }

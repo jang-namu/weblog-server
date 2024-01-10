@@ -1,10 +1,11 @@
 package com.bugflix.weblog.user.service;
 
-import com.bugflix.weblog.user.repository.UserRepository;
 import com.bugflix.weblog.user.domain.Authority;
+import com.bugflix.weblog.user.domain.Profile;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.dto.SignInRequest;
 import com.bugflix.weblog.user.dto.SignUpRequest;
+import com.bugflix.weblog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,15 +20,20 @@ public class UserServiceImpl {
     private final UserRepository userRepository;
 
     public void register(SignUpRequest signUpRequest) {
-        Authority at = new Authority("ROLE_USER");
         User user = User.builder()
                 .email(signUpRequest.getEmail())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .nickname(signUpRequest.getNickname())
                 .build();
 
+        Profile profile = new Profile(signUpRequest.getPhoneNumber(), signUpRequest.getBirthDate());
+        profile.assignUser(user);
+
+        Authority at = new Authority("ROLE_USER");
         at.assignUser(user);
+
         user.assignRoles(Collections.singletonList(at));
+        user.assignProfile(profile);
 
         userRepository.save(user);
     }
