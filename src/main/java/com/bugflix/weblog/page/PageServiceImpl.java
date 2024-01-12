@@ -12,4 +12,8 @@ import java.util.Optional;
 public class PageServiceImpl {
     private final PageRepository pageRepository;
 
+    public Page getPage(String url) throws Exception{
+        Optional<Page> pages = pageRepository.findByUrl(url);
+        return pages.orElseThrow(()->{ log.debug("jox: not found page "); return new Exception("hello");});
+    }
 }
