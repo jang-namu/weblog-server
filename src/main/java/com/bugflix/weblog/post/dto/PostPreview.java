@@ -1,6 +1,7 @@
 package com.bugflix.weblog.post.dto;
 
 import com.bugflix.weblog.post.Post;
+import com.bugflix.weblog.tag.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class PostPreview {
     private Long postId;
     private String title;
-    private List<String> tags;
+    private List<Tag> tags;
     private Long likeCount;
     private boolean isLike;
 

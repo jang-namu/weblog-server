@@ -21,11 +21,11 @@ public class TagServiceImpl {
     }
 
     // tag 반환
-    public ArrayList<String> findTags(String url){
+    public ArrayList<Tag> findTagsByURL(String url){
         List<PostAndTag> postAndTags = postAndTagRepository.findPostAndTagByPostPageUrl(url);
-        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<Tag> arrayList = new ArrayList<>();
         for (PostAndTag postAndTag : postAndTags){
-            arrayList.add(postAndTag.getTag().getTag());
+            arrayList.add(postAndTag.getTag());
         }
 
         return arrayList;

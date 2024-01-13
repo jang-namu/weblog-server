@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PostAndTag {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_and_tag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -20,4 +23,9 @@ public class PostAndTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id",nullable = false)
     private Post post;
+
+    public PostAndTag(Post post,Tag tag){
+        this.tag = tag;
+        this.post = post;
+    }
 }

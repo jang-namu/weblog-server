@@ -20,29 +20,26 @@ import java.util.List;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="post_id")
     private Long id;
 
     private String title;
     private String content;
     private String memo;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="page_id",nullable = false)
     private Page page;
 
- /*   @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
+/*
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     private List<PostAndTag> postAndTags;
 */
+
 
     public Post(PostRequest postRequest){
         title = postRequest.getTitle();

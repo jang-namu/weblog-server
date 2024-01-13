@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.bugflix.weblog.post.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "user_tb")
 @NoArgsConstructor
 @Getter
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false)
@@ -22,7 +25,12 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true,fetch=FetchType.LAZY)
-    private List<Post> posts;
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
+    public User(String loginId,String password,String nickname){
+        this.loginId = loginId;
+        this.password = password;
+        this.nickname = nickname;
+    }
 }
