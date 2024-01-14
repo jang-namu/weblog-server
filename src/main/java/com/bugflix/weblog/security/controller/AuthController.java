@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API", description = "로그인 및 사용자 인증 API")
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthServiceImpl authService;
 
-
+//    @CommonResponses
     @Operation(summary = "로그인", description = "로그인 성공 시 액세스 토큰 및 리프레쉬 토큰을 발급합니다.")
     @PostMapping(value = "/login")
     public ResponseEntity<TokenResponse> login(@RequestBody SignInRequest signInRequest) {

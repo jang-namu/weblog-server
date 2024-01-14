@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     private static final String[] PERMIT_TO_USER = {
-            "/api/auth/test"
+            "/api/v1/auth/test"
     };
 
     private static final String[] SWAGGER_URL_ARRAY = {
@@ -47,9 +47,9 @@ public class SecurityConfiguration {
     };
 
     private static final String[] PERMIT_TO_ALL = {
-            "/api/users",
-            "/api/auth/login",
-            "/api/auth/reissue"
+            "/api/v1/users",
+            "/api/v1/auth/login",
+            "/api/v1/auth/reissue"
     };
 
     @Bean
