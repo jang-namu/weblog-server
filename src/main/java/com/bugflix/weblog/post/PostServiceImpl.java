@@ -164,17 +164,49 @@ public class PostServiceImpl {
 
         for (Post post : postList){
             Long postId = post.getPostId();
-            PostPreview postPreview = new PostPreview(post);
 
-            // postPreview Entity 하나에 대한 설정
-            postPreview.setTags(tagRepository.findTagsByPostPostId(postId));
-            postPreview.setNickname(userService.findNicknameByPostId(postId));
-            postPreview.setLike(likeService.isLiked(postId,(long)1)); // Todo 1을 내 Id 로 교체
-            postPreview.setCreatedDate(post.getCreatedDate());
-            postPreview.setModifiedDate(post.getModifiedDate());
-            postPreview.setLikeCount(likeService.countLikes(postId));   // Todo postId 가 다른 여러 개의 Entity가 입력되었을 때, like Count 가 정상 작동하는지 확인.
+            PostPreview postPreview = new PostPreview(
+                    post,
+                    tagRepository.findTagsByPostPostId(postId),
+                    userService.findNicknameByPostId(postId),
+                    likeService.isLiked(postId,(long)1),    // Todo User Id로 변경
+                    post.getCreatedDate(),
+                    post.getModifiedDate(),
+                    likeService.countLikes(postId));
+
+            // Todo postId 가 다른 여러 개의 Entity가 입력되었을 때, like Count 가 정상 작동하는지 확인.
 
             postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
+        }
+        return postPreviews;
+    }
+    /**
+     * Name : getMyPostPreview
+     * Parameter :
+     *  - String url
+     * Return :
+     *  - ArrayList<PostPreview>
+     *
+     * Explanation :
+     *  - 페이지 내에서 내가 작성한 post 미리 보기 목록 반환
+     * */
+    public ArrayList<PostPreview> getMyPostPreview(String url){
+        List<Post> posts = postRepository.findByPageUrlAndUserUserId(url,(long)1);
+        ArrayList<PostPreview> postPreviews = new ArrayList<>();
+
+        for (Post post: posts){
+            Long postId = post.getPostId();
+
+            PostPreview postPreview = new PostPreview(
+                    post,
+                    tagRepository.findTagsByPostPostId(postId),
+                    userService.findNicknameByPostId(postId),
+                    likeService.isLiked(postId,(long)1),    // Todo User Id 로 변경
+                    post.getCreatedDate(),
+                    post.getModifiedDate(),
+                    likeService.countLikes(postId));
+
+            postPreviews.add(postPreview);
         }
         return postPreviews;
     }

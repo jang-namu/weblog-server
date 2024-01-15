@@ -65,9 +65,7 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    // Todo: 시나리오에 맞는 다양한 매개변수 사용
 
-    // Todo : RequestHeader 내용 수정 : @RequestHeader({Header Field Name})
     /**
      *  Name : getPost
      *  Parameter :
@@ -135,4 +133,21 @@ public class PostController {
 
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
     }
+
+    /**
+     * Name : getMyPostPreview
+     * Parameter :
+     *  - String url
+     * Return :
+     *  - ResponseEntity<ArrayList<PostPreview>>
+     *
+     * Explanation :
+     *  - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
+     * */
+    @GetMapping("/post/mine")
+    public ResponseEntity<ArrayList<PostPreview>> getMyPostPreview(@RequestParam(name = "url")String url){
+
+        return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url));
+    }
+
 }
