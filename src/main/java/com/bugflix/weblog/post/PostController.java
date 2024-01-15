@@ -150,4 +150,10 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url));
     }
 
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        // Todo 2. Post Delete Logic 구성
+        return ResponseEntity.ok().build();
+    }
+
 }

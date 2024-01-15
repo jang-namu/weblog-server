@@ -114,7 +114,7 @@ public class PostServiceImpl {
     public PostResponse getPost(Long postId) throws Exception{
         Post post = postRepository.findById(postId).orElseThrow(()->new Exception(""));
         PostResponse postResponse = new PostResponse(post);
-
+        // Todo 1. post Update Logic 구성
         postResponse.setNickname(userService.findNicknameByPostId(postId));
         postResponse.setTags(tagService.findTagsByPostId(postId));
         postResponse.setLike(likeService.isLiked(postId,(long)1));
