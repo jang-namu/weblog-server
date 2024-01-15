@@ -13,26 +13,29 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class PostResponse {
+    private Long postId;
     private String title;
+    private List<Tag> tags;
     private String content;
     private String memo;
-    private ArrayList<String> tags;
     private Long likeCount;
     private boolean isLike;
     private String nickname;
-    private String profileImageLink;
+    private String profileImageUrl;
 
     public PostResponse(Post post){
         title = post.getTitle();
         content = post.getContent();
         memo = post.getMemo();
+        postId = post.getPostId();
     }
-    public PostResponse(Post post, List<Tag> tags, Profile profile, User user){
-        this(post);
-        this.tags = new ArrayList<>();
-        for (Tag tag:tags){
-            this.tags.add(tag.getTagContent());
-        }
 
+    // Todo Profile 추가
+    public PostResponse(Post post, User user, List<Tag> tags){
+        this(post);
+        this.tags = tags;
+
+        nickname = user.getNickname();
+       // profileImageUrl = profile.getProfileImageUrl();
     }
 }

@@ -1,33 +1,35 @@
 package com.bugflix.weblog.tag;
 
-import com.bugflix.weblog.postandtag.PostAndTag;
+import com.bugflix.weblog.common.BaseTimeEntity;
+import com.bugflix.weblog.post.Post;
 import com.bugflix.weblog.tag.dto.TagRequest;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity(name = "tag_tb")
 @NoArgsConstructor
-public class Tag {
+public class Tag extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private Long id;
+    private Long tagId;
 
     @Getter
     private String tagContent;
 
-    @OneToMany(mappedBy = "tag",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    private List<PostAndTag> postAndTags;
-
-    public Tag(TagRequest tagRequest){
-        tagContent = tagRequest.getTag();
-    }
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
     public Tag(String tagContent){
+        this.tagContent = tagContent;
+    }
+
+    public Tag(Post post,String tagContent){
+        this.post = post;
         this.tagContent = tagContent;
     }
 }

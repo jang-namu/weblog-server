@@ -11,6 +11,6 @@ public class PostRequest {
     private String memo;
     private List<String> tags;
     private String url;
-    private String image_url;
+    private String imageUrl;
 
 }

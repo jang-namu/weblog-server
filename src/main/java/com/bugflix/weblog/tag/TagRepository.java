@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface TagRepository extends JpaRepository<Tag,Long> {
 
     public Optional<Tag> findTagByTagContent(String tagContent);
+    public List<Tag> findTagsByPostPostId(Long postId);
+
 }
