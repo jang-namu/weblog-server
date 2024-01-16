@@ -206,4 +206,8 @@ public class PostServiceImpl {
         }
         return postPreviews;
     }
+
+    public void deletePost(Long postId){
+        postRepository.deleteByPostId(postId);
+    }
 }
