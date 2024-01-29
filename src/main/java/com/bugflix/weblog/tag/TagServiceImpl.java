@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TagServiceImpl {
-    private final TagRepository tagRepository;
+    private static TagRepository tagRepository;
 
     public List<Tag> findTagsByPostId(Long postId){
         return tagRepository.findTagsByPostPostId(postId);

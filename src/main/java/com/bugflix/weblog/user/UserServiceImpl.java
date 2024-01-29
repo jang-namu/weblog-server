@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl {
-    private final UserRepository userRepository;
+    private static UserRepository userRepository;
 
     public void saveUser(User user){
         userRepository.save(user);

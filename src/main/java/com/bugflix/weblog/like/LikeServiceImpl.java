@@ -5,12 +5,11 @@ import com.bugflix.weblog.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class LikeServiceImpl {
-    private final LikeRepository likeRepository;
+    private static LikeRepository likeRepository;
 
     public boolean isLiked(Long postId,Long userId){
         return likeRepository.existsLikeById_PostIdAndId_UserId(postId,userId);
