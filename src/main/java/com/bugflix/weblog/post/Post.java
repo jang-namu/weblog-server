@@ -4,6 +4,7 @@ import com.bugflix.weblog.common.BaseTimeEntity;
 import com.bugflix.weblog.post.dto.PostRequest;
 import com.bugflix.weblog.tag.Tag;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.bugflix.weblog.page.Page;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "post_tb")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Post extends BaseTimeEntity {
     @Id

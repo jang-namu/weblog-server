@@ -3,6 +3,7 @@ package com.bugflix.weblog.comment;
 import com.bugflix.weblog.post.Post;
 import com.bugflix.weblog.user.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "comment_tb")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Comment {
 
