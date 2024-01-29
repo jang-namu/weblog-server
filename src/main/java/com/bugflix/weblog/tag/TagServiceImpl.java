@@ -13,7 +13,7 @@ import java.util.List;
 public class TagServiceImpl {
     private final TagRepository tagRepository;
 
-    public List<Tag> findTagsByPostId(Long postId){
+    public List<Tag> findTagsByPostId(Long postId) {
         return tagRepository.findTagsByPostPostId(postId);
     }
 }

@@ -24,15 +24,15 @@ public class Profile {
     private String phoneNumber;
     private LocalDate birthDate;
 
-    public Profile(Long userId){
+    public Profile(Long userId) {
         this.id = new ProfileKey(userId);
     }
 
-    public void updateId(ProfileKey id){
+    public void updateId(ProfileKey id) {
         this.id = id;
     }
 
-    public Profile(Long userId, ProfileRequest profileReqeust){
+    public Profile(Long userId, ProfileRequest profileReqeust) {
 
     }
 }

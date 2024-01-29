@@ -8,7 +8,7 @@ public class LikeStatus {
     private long likeCount;
     private boolean isLiked;
 
-    public LikeStatus(){
+    public LikeStatus() {
         this.likeCount = 0;
         this.isLiked = false;
     }

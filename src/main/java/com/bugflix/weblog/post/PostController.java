@@ -20,113 +20,113 @@ public class PostController {
     private final PostServiceImpl postServiceImpl;
 
     /**
-     *  Name : savePost
-     *  Parameter :
-     *   - PostRequest postRequest : Frontend 의 저장 요청 Post
-     *  Return :
-     *   - ResponseEntity<Void> :
-     *     - Success : 200 ok
-     *     - Failed : error
-     *
-     *  Explanation :
-     *   - post 저장 요청 수신
-     *   - 요청 처리 결과 반환
-     *
-     *   Scenario :
-     *    - 1. extension 에서 저장 요청
-     *    - 2. weblog page 에서 저장 요청
-     * */
+     * Name : savePost
+     * Parameter :
+     * - PostRequest postRequest : Frontend 의 저장 요청 Post
+     * Return :
+     * - ResponseEntity<Void> :
+     * - Success : 200 ok
+     * - Failed : error
+     * <p>
+     * Explanation :
+     * - post 저장 요청 수신
+     * - 요청 처리 결과 반환
+     * <p>
+     * Scenario :
+     * - 1. extension 에서 저장 요청
+     * - 2. weblog page 에서 저장 요청
+     */
     @PostMapping
-    public ResponseEntity<Void> savePost(@RequestBody PostRequest postRequest){
+    public ResponseEntity<Void> savePost(@RequestBody PostRequest postRequest) {
         postServiceImpl.savePost(postRequest);
         return ResponseEntity.ok().build();
     }
 
     /**
-     *  Name : updatePost
-     *  Parameter :
-     *   - PostRequest postRequest : Frontend 의 수정 요청 Post
-     *  Return :
-     *   - ResponseEntity<Void> :
-     *     - Success : 200 ok
-     *     - Failed : error
-     *
-     *  Explanation :
-     *   - post 수정 요청 수신
-     *   - 요청 처리 결과 반환
-     *
-     *   Scenario :
-     *    - 1. extension 에서 수정 요청
-     *    - 2. weblog page 에서 수정 요청
-     * */
+     * Name : updatePost
+     * Parameter :
+     * - PostRequest postRequest : Frontend 의 수정 요청 Post
+     * Return :
+     * - ResponseEntity<Void> :
+     * - Success : 200 ok
+     * - Failed : error
+     * <p>
+     * Explanation :
+     * - post 수정 요청 수신
+     * - 요청 처리 결과 반환
+     * <p>
+     * Scenario :
+     * - 1. extension 에서 수정 요청
+     * - 2. weblog page 에서 수정 요청
+     */
     @PutMapping
-    public ResponseEntity<Void> updatePost(@RequestBody PostRequest postRequest, @RequestParam(name = "postId")Long postId) throws Exception {
-        postServiceImpl.updatePost(postRequest,postId);
+    public ResponseEntity<Void> updatePost(@RequestBody PostRequest postRequest, @RequestParam(name = "postId") Long postId) throws Exception {
+        postServiceImpl.updatePost(postRequest, postId);
         return ResponseEntity.ok().build();
     }
 
     /**
-     *  Name : getPost
-     *  Parameter :
-     *   - Long postId : 확인 요청한 post
-     *  Return :
-     *   - ResponseEntity<Post> :
-     *     - Success : 200 ok && Post
-     *     - Failed : error
-     *
-     *  Explanation :
-     *   - 특정 post 에 대한 접근 요청 수신
-     *   - 응답 반환
-     *
-     *  Scenario :
-     *   - 1. post 목록에서 post Click
-     *   - 2. post_id 로 post 검색
-     * */
+     * Name : getPost
+     * Parameter :
+     * - Long postId : 확인 요청한 post
+     * Return :
+     * - ResponseEntity<Post> :
+     * - Success : 200 ok && Post
+     * - Failed : error
+     * <p>
+     * Explanation :
+     * - 특정 post 에 대한 접근 요청 수신
+     * - 응답 반환
+     * <p>
+     * Scenario :
+     * - 1. post 목록에서 post Click
+     * - 2. post_id 로 post 검색
+     */
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) throws Exception{
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) throws Exception {
 
         return ResponseEntity.ok(postServiceImpl.getPost(postId));
     }
 
     /**
-     *  Name : getPost
-     *  Parameter :
-     *   - String url: web page 주소
-     *  Return :
-     *   - ResponseEntity<ArrayList<Post>> :
-     *     - Success : 200 ok && ArrayList<Post>
-     *     - Failed : error
-     *
-     *  Explanation :
-     *   - 특정 web page 에 있는 모든 post 의 모든 post 요청
-     *   - 응답 반환
-     *
-     *  Scenario :
-     *   - 1. extension 에서 post 보기 요청
-     * */
+     * Name : getPost
+     * Parameter :
+     * - String url: web page 주소
+     * Return :
+     * - ResponseEntity<ArrayList<Post>> :
+     * - Success : 200 ok && ArrayList<Post>
+     * - Failed : error
+     * <p>
+     * Explanation :
+     * - 특정 web page 에 있는 모든 post 의 모든 post 요청
+     * - 응답 반환
+     * <p>
+     * Scenario :
+     * - 1. extension 에서 post 보기 요청
+     */
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getPost(@RequestParam(name="url") String url) {
+    public ResponseEntity<List<PostResponse>> getPost(@RequestParam(name = "url") String url) {
 
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
     }
 
     /**
-     *  Name : getPostPreview
-     *  Parameter :
-     *   - String url: web page 주소
-     *  Return :
-     *   - ResponseEntity<ArrayList<PostPreview>> :
-     *     - Success : 200 ok && ArrayList<Post>
-     *     - Failed : error
-     *
-     *  Explanation :
-     *   - 특정 web page 에 있는 모든 post 의 preview 반환
-     *
-     *  Scenario :
-     *   - 1. extension 에서 post 목록 요청
-     * */
+     * Name : getPostPreview
+     * Parameter :
+     * - String url: web page 주소
+     * Return :
+     * - ResponseEntity<ArrayList<PostPreview>> :
+     * - Success : 200 ok && ArrayList<Post>
+     * - Failed : error
+     * <p>
+     * Explanation :
+     * - 특정 web page 에 있는 모든 post 의 preview 반환
+     * <p>
+     * Scenario :
+     * - 1. extension 에서 post 목록 요청
+     */
     @GetMapping("/preview")
-    public ResponseEntity<List<PostPreview>> getPostPreview(@RequestParam(name = "url")String url){
+    public ResponseEntity<List<PostPreview>> getPostPreview(@RequestParam(name = "url") String url) {
 
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
     }
@@ -134,15 +134,15 @@ public class PostController {
     /**
      * Name : getMyPostPreview
      * Parameter :
-     *  - String url
+     * - String url
      * Return :
-     *  - ResponseEntity<ArrayList<PostPreview>>
-     *
+     * - ResponseEntity<ArrayList<PostPreview>>
+     * <p>
      * Explanation :
-     *  - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
-     * */
+     * - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
+     */
     @GetMapping("/mine")
-    public ResponseEntity<List<PostPreview>> getMyPostPreview(@RequestParam(name = "url")String url){
+    public ResponseEntity<List<PostPreview>> getMyPostPreview(@RequestParam(name = "url") String url) {
 
         return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url));
     }
@@ -150,13 +150,13 @@ public class PostController {
     /**
      * Name : deletePost
      * Parameter :
-     *  - Long postId
+     * - Long postId
      * Return :
-     *  - ResponseEntity<Void>
-     *
+     * - ResponseEntity<Void>
+     * <p>
      * Explanation :
-     *  - postId 로 Post 삭제
-     * */
+     * - postId 로 Post 삭제
+     */
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
 

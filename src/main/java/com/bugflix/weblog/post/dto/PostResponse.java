@@ -23,7 +23,7 @@ public class PostResponse {
     private String nickname;
     private String profileImageUrl;
 
-    public PostResponse(Post post){
+    public PostResponse(Post post) {
         title = post.getTitle();
         content = post.getContent();
         memo = post.getMemo();
@@ -31,11 +31,11 @@ public class PostResponse {
     }
 
     // Todo Profile 추가
-    public PostResponse(Post post, User user, List<Tag> tags){
+    public PostResponse(Post post, User user, List<Tag> tags) {
         this(post);
         this.tags = tags;
 
         nickname = user.getNickname();
-       // profileImageUrl = profile.getProfileImageUrl();
+        // profileImageUrl = profile.getProfileImageUrl();
     }
 }

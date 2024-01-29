@@ -25,11 +25,11 @@ public class Tag extends BaseTimeEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    public Tag(String tagContent){
+    public Tag(String tagContent) {
         this.tagContent = tagContent;
     }
 
-    public Tag(Post post,String tagContent){
+    public Tag(Post post, String tagContent) {
         this.post = post;
         this.tagContent = tagContent;
     }

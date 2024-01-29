@@ -10,9 +10,10 @@ public class ProfileKey implements Serializable {
 
     private Long userId;
 
-    public ProfileKey(){}
+    public ProfileKey() {
+    }
 
-    public ProfileKey(Long userId){
+    public ProfileKey(Long userId) {
         this.userId = userId;
     }
 
@@ -20,9 +21,9 @@ public class ProfileKey implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProfileKey profileKey = (ProfileKey)o;
+        ProfileKey profileKey = (ProfileKey) o;
 
-        return Objects.equals(userId,profileKey.userId);
+        return Objects.equals(userId, profileKey.userId);
     }
 
     @Override

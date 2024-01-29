@@ -25,9 +25,12 @@ public class Page {
     @OneToMany(mappedBy = "page")
     private List<Post> posts = new ArrayList<>();
 
-    public Page(PostRequest postRequest){
+    public Page(PostRequest postRequest) {
         this.url = postRequest.getUrl();
     }
-    public Page(String url){this.url = url;}
+
+    public Page(String url) {
+        this.url = url;
+    }
 
 }

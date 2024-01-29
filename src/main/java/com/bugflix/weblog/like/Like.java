@@ -16,11 +16,7 @@ public class Like {
     private LikeKey id;
 
     public Like(Long userId, Long postId) {
-        this.id = new LikeKey(userId,postId);
+        this.id = new LikeKey(userId, postId);
 
     }
-
-/*    public void updateId(LikeKey id) {
-        this.id = id;
-    }*/
 }
