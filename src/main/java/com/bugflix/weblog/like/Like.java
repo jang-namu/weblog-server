@@ -19,7 +19,7 @@ public class Like {
 
     }
 
-    public void updateId(LikeKey id) {
+/*    public void updateId(LikeKey id) {
         this.id = id;
-    }
+    }*/
 }

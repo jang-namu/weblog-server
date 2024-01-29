@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/v1/post")
 @Slf4j
 public class PostController {
     private final PostServiceImpl postServiceImpl;
@@ -35,7 +35,7 @@ public class PostController {
      *    - 1. extension 에서 저장 요청
      *    - 2. weblog page 에서 저장 요청
      * */
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity<Void> savePost(@RequestBody PostRequest postRequest){
         postServiceImpl.savePost(postRequest);
         return ResponseEntity.ok().build();
@@ -58,7 +58,7 @@ public class PostController {
      *    - 1. extension 에서 수정 요청
      *    - 2. weblog page 에서 수정 요청
      * */
-    @PutMapping("/post")
+    @PutMapping
     public ResponseEntity<Void> updatePost(@RequestBody PostRequest postRequest, @RequestParam(name = "postId")Long postId) throws Exception {
         postServiceImpl.updatePost(postRequest,postId);
         return ResponseEntity.ok().build();
@@ -81,7 +81,7 @@ public class PostController {
      *   - 1. post 목록에서 post Click
      *   - 2. post_id 로 post 검색
      * */
-    @GetMapping("/post/{postId}")
+    @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) throws Exception{
 
         return ResponseEntity.ok(postServiceImpl.getPost(postId));
@@ -103,7 +103,7 @@ public class PostController {
      *  Scenario :
      *   - 1. extension 에서 post 보기 요청
      * */
-    @GetMapping("/post")
+    @GetMapping
     public ResponseEntity<ArrayList<PostResponse>> getPost(@RequestParam(name="url") String url) {
 
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
@@ -124,7 +124,7 @@ public class PostController {
      *  Scenario :
      *   - 1. extension 에서 post 목록 요청
      * */
-    @GetMapping("/post/preview")
+    @GetMapping("/preview")
     public ResponseEntity<ArrayList<PostPreview>> getPostPreview(@RequestParam(name = "url")String url){
 
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
@@ -140,7 +140,7 @@ public class PostController {
      * Explanation :
      *  - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
      * */
-    @GetMapping("/post/mine")
+    @GetMapping("/mine")
     public ResponseEntity<ArrayList<PostPreview>> getMyPostPreview(@RequestParam(name = "url")String url){
 
         return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url));
@@ -156,7 +156,7 @@ public class PostController {
      * Explanation :
      *  - postId 로 Post 삭제
      * */
-    @DeleteMapping("/post/{postId}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
 
         postServiceImpl.deletePost(postId);
