@@ -136,11 +136,8 @@ public class PostServiceImpl {
         List<Post> resultList = postRepository.findByPageUrl(url);
         ArrayList<PostResponse> resultArrayList = new ArrayList<>();
 
-        for (Post post : resultList) {
-            PostResponse postResponse = new PostResponse(post);
-            resultArrayList.add(postResponse);
-        }
-
+        resultList.forEach(post ->  resultArrayList.add(new PostResponse(post)));
+        // Tag, LikeCount, Profile 등 추가 필요
         return resultArrayList;
     }
 
