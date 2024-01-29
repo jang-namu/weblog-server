@@ -88,9 +88,9 @@ public class PostServiceImpl {
      * */
     public void updatePost(PostRequest postRequest,Long postId) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(()->new Exception(""));
-        post.updateTitle(post.getTitle());
-        post.updateMemo(post.getMemo());
-        post.updateContent(post.getContent());
+        post.updateTitle(postRequest.getTitle());
+        post.updateMemo(postRequest.getMemo());
+        post.updateContent(postRequest.getContent());
 
         // Todo image_url 추가
 
