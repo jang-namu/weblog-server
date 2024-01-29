@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LikeServiceImpl {
-    private static LikeRepository likeRepository;
+    private final LikeRepository likeRepository;
 
     public boolean isLiked(Long postId,Long userId){
         return likeRepository.existsLikeById_PostIdAndId_UserId(postId,userId);

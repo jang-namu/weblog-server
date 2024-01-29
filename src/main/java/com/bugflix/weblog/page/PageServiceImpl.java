@@ -10,7 +10,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class PageServiceImpl {
-    private static PageRepository pageRepository;
+    private final PageRepository pageRepository;
 
     public Page getPage(String url) throws Exception{
         Optional<Page> pages = pageRepository.findByUrl(url);

@@ -23,12 +23,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class PostServiceImpl {
-    private static PostRepository postRepository;
-    private static PageRepository pageRepository;
-    private static LikeServiceImpl likeServiceImpl;
-    private static TagServiceImpl tagService;
-    private static UserServiceImpl userService;
-    private static TagRepository tagRepository;
+    private final PostRepository postRepository;
+    private final PageRepository pageRepository;
+    private final LikeServiceImpl likeServiceImpl;
+    private final TagServiceImpl tagService;
+    private final UserServiceImpl userService;
+    private final TagRepository tagRepository;
 
 
     /**
