@@ -87,7 +87,7 @@ public class PostController {
     @GetMapping("/v1/posts/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId,
                                                 @AuthenticationPrincipal UserDetails userDetails) throws Exception {
-
+        if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPost(postId));
         return ResponseEntity.ok(postServiceImpl.getPost(postId, userDetails));
     }
 
@@ -131,7 +131,7 @@ public class PostController {
     @GetMapping("/v1/posts/preview")
     public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam(name = "url") String url,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
-
+        if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url, userDetails));
     }
 

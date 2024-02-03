@@ -125,6 +125,19 @@ public class PostServiceImpl {
         return postResponse;
     }
 
+    public PostResponse getPost(Long postId) throws Exception {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
+        PostResponse postResponse = new PostResponse(post);
+
+        // Todo 1. post Update Logic 구성
+        postResponse.setNickname(userService.findNicknameByPostId(postId));
+        postResponse.setTags(tagService.findTagsByPostId(postId));
+        postResponse.setLike(false);
+        postResponse.setLikeCount(likeServiceImpl.countLikes(postId));
+
+        return postResponse;
+    }
+
     /**
      * Name : getPost
      * Parameter :
@@ -160,6 +173,7 @@ public class PostServiceImpl {
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
 
         List<Post> postList = postRepository.findByPageUrl(url);
+
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
         for(Post post : postList) {
@@ -180,6 +194,31 @@ public class PostServiceImpl {
         }
         return postPreviews;
     }
+
+    public List<PostPreviewResponse> getPostPreview(String url) {
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
+
+        List<Post> postList = postRepository.findByPageUrl(url);
+
+        for(Post post : postList) {
+            Long postId = post.getPostId();
+
+            PostPreviewResponse postPreview = new PostPreviewResponse(
+                    post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(TagResponse::from).toList(),
+                    userService.findNicknameByPostId(postId),
+                    false,
+                    post.getCreatedDate(),
+                    post.getModifiedDate(),
+                    likeServiceImpl.countLikes(postId));
+
+            // Todo postId 가 다른 여러 개의 Entity가 입력되었을 때, like Count 가 정상 작동하는지 확인.
+
+            postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
+        }
+        return postPreviews;
+    }
+
 
     /**
      * Name : getMyPostPreview
