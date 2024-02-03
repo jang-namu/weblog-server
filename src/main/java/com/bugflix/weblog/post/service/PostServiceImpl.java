@@ -142,7 +142,7 @@ public class PostServiceImpl {
         List<PostResponse> resultArrayList = new ArrayList<>();
 
         resultList.forEach(post -> resultArrayList.add(new PostResponse(post)));
-        // Todo : Tag, LikeCount, Profile 등 추가 필요
+        // Todo : Tag, LikeCount, Profile, nickname 등 추가 필요
         return resultArrayList;
     }
 

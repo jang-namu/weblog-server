@@ -1,7 +1,7 @@
 package com.bugflix.weblog.user.service;
 
 import com.bugflix.weblog.user.domain.Authority;
-import com.bugflix.weblog.user.domain.Profile;
+import com.bugflix.weblog.profile.domain.Profile;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.dto.SignInRequest;
 import com.bugflix.weblog.user.dto.SignUpRequest;
@@ -48,4 +48,14 @@ public class UserServiceImpl {
         }
         userRepository.delete(user);
     }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    public String findNicknameByPostId(Long postId) {
+        User user = userRepository.findByPosts_PostId(postId);
+        return user.getNickname();
+    }
+
 }
