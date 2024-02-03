@@ -1,9 +1,8 @@
-package com.bugflix.weblog.comment;
+package com.bugflix.weblog.comment.domain;
 
 import com.bugflix.weblog.common.BaseTimeEntity;
-import com.bugflix.weblog.post.Post;
-import com.bugflix.weblog.user.User;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.bugflix.weblog.post.domain.Post;
+import com.bugflix.weblog.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

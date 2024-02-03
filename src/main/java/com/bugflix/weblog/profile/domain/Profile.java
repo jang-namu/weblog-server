@@ -1,6 +1,7 @@
-package com.bugflix.weblog.user.domain;
+package com.bugflix.weblog.profile.domain;
 
 import com.bugflix.weblog.common.BaseTimeEntity;
+import com.bugflix.weblog.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,9 +16,10 @@ public class Profile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long profile_id;
+    @Column(name="profile_id")
+    private Long profileId;
 
-    // CascadeTyoe.ALL ?
+    // CascadeType.ALL ?
     // targetEntity? mappedBy?
     // 1대1 매핑 best practice?
     @JoinColumn(name = "user_id")
@@ -42,7 +44,4 @@ public class Profile extends BaseTimeEntity {
         this.user = user;
     }
 
-    public void changeImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 }

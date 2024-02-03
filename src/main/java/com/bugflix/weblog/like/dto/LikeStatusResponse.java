@@ -1,14 +1,13 @@
 package com.bugflix.weblog.like.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-public class LikeStatus {
+public class LikeStatusResponse {
     private long likeCount;
     private boolean isLiked;
 
-    public LikeStatus() {
+    public LikeStatusResponse() {
         this.likeCount = 0;
         this.isLiked = false;
     }

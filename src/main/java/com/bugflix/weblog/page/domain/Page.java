@@ -1,11 +1,10 @@
-package com.bugflix.weblog.page;
+package com.bugflix.weblog.page.domain;
 
-import com.bugflix.weblog.post.dto.PostRequest;
+import com.bugflix.weblog.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.bugflix.weblog.post.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +16,13 @@ public class Page {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "page_id")
-    private Long id;
+    private Long pageId;
 
     @Getter
     private String url;
 
     @OneToMany(mappedBy = "page")
     private List<Post> posts = new ArrayList<>();
-
-    public Page(PostRequest postRequest) {
-        this.url = postRequest.getUrl();
-    }
 
     public Page(String url) {
         this.url = url;

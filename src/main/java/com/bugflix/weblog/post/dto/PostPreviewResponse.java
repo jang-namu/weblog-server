@@ -1,17 +1,14 @@
 package com.bugflix.weblog.post.dto;
 
-import com.bugflix.weblog.post.Post;
-import com.bugflix.weblog.profile.Profile;
-import com.bugflix.weblog.tag.Tag;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.bugflix.weblog.post.domain.Post;
+import com.bugflix.weblog.tag.domain.Tag;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor
-@Data
-public class PostPreview {
+@Getter
+public class PostPreviewResponse {
     private Long postId;
     private String title;
     private String nickname;
@@ -22,8 +19,7 @@ public class PostPreview {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-
-    public PostPreview(
+    public PostPreviewResponse(
             Post post,
             List<Tag> tags,
             String nickname,
@@ -42,4 +38,5 @@ public class PostPreview {
         this.modifiedDate = modifiedDate;
         this.likeCount = likeCount;
     }
+
 }

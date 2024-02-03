@@ -1,4 +1,4 @@
-package com.bugflix.weblog.like;
+package com.bugflix.weblog.like.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.NoArgsConstructor;
