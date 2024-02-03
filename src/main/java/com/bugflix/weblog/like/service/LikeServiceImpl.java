@@ -3,7 +3,9 @@ package com.bugflix.weblog.like.service;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
+import com.bugflix.weblog.security.domain.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 
@@ -35,10 +37,10 @@ public class LikeServiceImpl {
      * <p>
      * - isLiked 와 likeCount 를 LikeStatusResponse 로 encapsulation 하여 반환
      */
-    public LikeStatusResponse changeLikeStatus(Long postId) {
+    public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) {
         LikeStatusResponse likeStatus = new LikeStatusResponse();
 
-        Long userId = 1L;  // Todo User 정보 받아오기
+        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
         Like like = likeRepository.findLikeById_PostIdAndId_UserId(postId, userId);
 
