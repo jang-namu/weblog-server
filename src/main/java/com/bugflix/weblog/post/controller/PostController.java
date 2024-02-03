@@ -108,7 +108,7 @@ public class PostController {
      * - 1. extension 에서 post 보기 요청
      */
     @GetMapping("/v1/posts")
-    public ResponseEntity<List<PostResponse>> getPost(@RequestParam(name = "url") String url) {
+    public ResponseEntity<List<PostResponse>> getAllPost(@RequestParam(name = "url") String url) {
 
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
     }
