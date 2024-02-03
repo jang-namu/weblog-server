@@ -10,6 +10,7 @@ import com.bugflix.weblog.post.dto.PostResponse;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.tag.domain.Tag;
+import com.bugflix.weblog.tag.dto.TagResponse;
 import com.bugflix.weblog.tag.repository.TagRepository;
 import com.bugflix.weblog.tag.service.TagServiceImpl;
 import com.bugflix.weblog.user.domain.User;
@@ -166,7 +167,7 @@ public class PostServiceImpl {
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
                     post,
-                    tagRepository.findTagsByPostPostId(postId),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(TagResponse::from).toList(),
                     userService.findNicknameByPostId(postId),
                     likeServiceImpl.isLiked(postId, userId),
                     post.getCreatedDate(),
@@ -200,7 +201,7 @@ public class PostServiceImpl {
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
                     post,
-                    tagRepository.findTagsByPostPostId(postId),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(TagResponse::from).toList(),
                     userService.findNicknameByPostId(postId),
                     likeServiceImpl.isLiked(postId, userId),
                     post.getCreatedDate(),

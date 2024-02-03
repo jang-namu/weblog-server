@@ -1,9 +1,9 @@
 package com.bugflix.weblog.post.dto;
 
-import com.bugflix.weblog.tag.domain.Tag;
+import com.bugflix.weblog.post.domain.Post;
+import com.bugflix.weblog.tag.dto.TagResponse;
 import com.bugflix.weblog.user.domain.User;
 import lombok.Data;
-import com.bugflix.weblog.post.domain.Post;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class PostResponse {
     private Long postId;
     private String title;
-    private List<Tag> tags;
+    private List<TagResponse> tags;
     private String content;
     private String memo;
     private Long likeCount;
@@ -29,7 +29,7 @@ public class PostResponse {
     }
 
     // Todo Profile 추가
-    public PostResponse(Post post, User user, List<Tag> tags) {
+    public PostResponse(Post post, User user, List<TagResponse> tags) {
         this(post);
         this.tags = tags;
 

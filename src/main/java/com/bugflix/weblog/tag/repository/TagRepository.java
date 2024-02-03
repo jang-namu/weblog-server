@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-    public List<Tag> findTagsByPostPostId(Long postId);
+    List<Tag> findTagsByPostPostId(Long postId);
 
 }
