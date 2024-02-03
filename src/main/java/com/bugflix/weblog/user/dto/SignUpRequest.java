@@ -1,13 +1,16 @@
 package com.bugflix.weblog.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Schema(description = "회원가입 요청 DTO",
         requiredProperties = {"email", "password", "nickname", "phoneNumber", "birthDate"})
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SignUpRequest {
 
     @Schema(description = "이메일(로그인 ID)", example="bugflix19@example.com")
