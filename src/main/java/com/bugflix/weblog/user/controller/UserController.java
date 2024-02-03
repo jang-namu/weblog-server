@@ -22,8 +22,6 @@ public class UserController {
     @Operation(summary = "회원가입", description = "신규 사용자 정보를 등록합니다.")
     @PostMapping("/v1/users")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
-//        @AuthenticationPrincipal CustomUserDetails customUserDetails,
-//        customUserDetails.getUser().getUserId();
         userService.register(signUpRequest);
         return ResponseEntity.ok().build();
     }
