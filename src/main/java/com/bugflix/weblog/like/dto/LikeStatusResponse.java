@@ -1,14 +1,19 @@
 package com.bugflix.weblog.like.dto;
 
-import lombok.Data;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
-@Data
+@Getter
 public class LikeStatusResponse {
-    private long likeCount;
-    private boolean isLiked;
 
-    public LikeStatusResponse() {
-        this.likeCount = 0;
-        this.isLiked = false;
+    @Schema(description = "좋아요 갯수", example = "0")
+    private Long likeCount;
+
+    @Schema(description = "좋아요 체크표시", example = "false")
+    private Boolean isLiked;
+
+    public LikeStatusResponse(Long likeCount, Boolean isLiked) {
+        this.likeCount = likeCount;
+        this.isLiked = isLiked;
     }
 }

@@ -37,21 +37,18 @@ public class LikeServiceImpl {
      * <p>
      * - isLiked 와 likeCount 를 LikeStatusResponse 로 encapsulation 하여 반환
      */
-    public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) {
-        LikeStatusResponse likeStatus = new LikeStatusResponse();
+    public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) throws Exception {
 
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
-        Like like = likeRepository.findLikeById_PostIdAndId_UserId(postId, userId);
+        Like like = likeRepository.findLikeById_PostIdAndId_UserId(postId, userId).orElseThrow(Exception::new);
 
-        if (like != null) likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic
-        else {
-            likeRepository.save(new Like(userId, postId));
-            likeStatus.setLiked(true);
+        if (like != null) {
+            likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic
+            return new LikeStatusResponse(likeRepository.countByIdPostId(postId), false);
         }
+        likeRepository.save(new Like(userId, postId));
+        return new LikeStatusResponse(likeRepository.countByIdPostId(postId), true);
 
-        likeStatus.setLikeCount(likeRepository.countByIdPostId(postId));    // Like Count 변경 Logic
-
-        return likeStatus;
     }
 }
