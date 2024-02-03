@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API", description = "로그인 및 사용자 인증 API")
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -20,13 +20,13 @@ public class AuthController {
 
 //    @CommonResponses
     @Operation(summary = "로그인", description = "로그인 성공 시 액세스 토큰 및 리프레쉬 토큰을 발급합니다.")
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/v1/auth/login")
     public ResponseEntity<TokenResponse> login(@RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok().body(authService.login(signInRequest));
     }
 
     @Operation(summary = "액세스 토큰 재발급", description = "리프레쉬 토큰을 통해 만료된 액세스 토큰을 재발급합니다.")
-    @PostMapping(value = "/reissue")
+    @PostMapping(value = "/v1/auth/reissue")
     public ResponseEntity<TokenResponse> refreshToken(
             HttpServletRequest httpServletRequest,
             @RequestBody SignInRequest signInRequest) throws Exception {
@@ -37,7 +37,7 @@ public class AuthController {
     }
 
     @Operation(summary = "JWT-기반 auth 테스트", description = "액세스 토큰의 유효성 테스트합니다.")
-    @GetMapping(value = "/test")
+    @GetMapping(value = "/v1/auth/test")
     public ResponseEntity<Void> test() {
         return ResponseEntity.ok().build();
     }

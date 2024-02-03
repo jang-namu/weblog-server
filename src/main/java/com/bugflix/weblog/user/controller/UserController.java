@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Tag(name = "User API", description = "사용자 관련 API")
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserServiceImpl userService;
 
     @Operation(summary = "회원가입", description = "신규 사용자 정보를 등록합니다.")
-    @PostMapping()
+    @PostMapping("/v1/users")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
 //        @AuthenticationPrincipal CustomUserDetails customUserDetails,
 //        customUserDetails.getUser().getUserId();
@@ -30,7 +30,7 @@ public class UserController {
 
     @Operation(summary = "회원탈퇴",
             description = "아이디(email)과 비밀번호 일치여부를 확인하고, 일치하다면 회원 정보를 삭제합니다.")
-    @DeleteMapping()
+    @DeleteMapping("/v1/users")
     public ResponseEntity<Void> unregister(@RequestBody SignInRequest signInRequest) throws Exception {
         userService.unregister(signInRequest);
         return ResponseEntity.ok().build();
