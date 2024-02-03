@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@Slf4j
 public class LikeController {
     private final LikeServiceImpl likeServiceImpl;
 
-    @GetMapping("/v1/like/{postId}")
+    @GetMapping("/v1/likes/{postId}")
     public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable(name = "postId") Long postId) {
         return ResponseEntity.ok(likeServiceImpl.changeLikeStatus(postId));
     }

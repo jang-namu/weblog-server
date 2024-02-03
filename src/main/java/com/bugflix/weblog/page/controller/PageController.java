@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class PageController {
     private final PageServiceImpl pageService;
 
-    @GetMapping("/v1/page")
+    @GetMapping("/v1/pages")
     public Page getPage(@RequestParam(name = "url") String url) throws Exception {
 
         return pageService.getPage(url);
