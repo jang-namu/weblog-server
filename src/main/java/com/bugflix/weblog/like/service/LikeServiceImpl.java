@@ -3,6 +3,7 @@ package com.bugflix.weblog.like.service;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
+import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,13 +14,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LikeServiceImpl {
     private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
 
     public boolean isLiked(Long postId, Long userId) {
         return likeRepository.existsLikeById_PostIdAndId_UserId(postId, userId);
     }
 
     public Long countLikes(Long postId) {
-        return likeRepository.countByIdPostId(postId);
+        return likeRepository.countById_PostId(postId);
     }
 
     /**
@@ -38,17 +40,17 @@ public class LikeServiceImpl {
      * - isLiked 와 likeCount 를 LikeStatusResponse 로 encapsulation 하여 반환
      */
     public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) throws Exception {
-
+        postRepository.findById(postId).orElseThrow(() -> new Exception("해당하는 Post를 찾을 수 없습니다"));
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
-        Like like = likeRepository.findLikeById_PostIdAndId_UserId(postId, userId).orElseThrow(Exception::new);
+        Like like = likeRepository.findById_UserIdAndId_PostId(userId, postId);
 
         if (like != null) {
             likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic
-            return new LikeStatusResponse(likeRepository.countByIdPostId(postId), false);
+            return new LikeStatusResponse(likeRepository.countById_PostId(postId), false);
         }
         likeRepository.save(new Like(userId, postId));
-        return new LikeStatusResponse(likeRepository.countByIdPostId(postId), true);
+        return new LikeStatusResponse(likeRepository.countById_PostId(postId), true);
 
     }
 }
