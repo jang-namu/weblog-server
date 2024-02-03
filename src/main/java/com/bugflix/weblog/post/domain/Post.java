@@ -23,8 +23,13 @@ public class Post extends BaseTimeEntity {
     private Long postId;
 
     private String title;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
+
+    @Column(columnDefinition = "LONGTEXT")
     private String memo;
+
     @Column(name = "image_url")
     private String imageUrl;
 
