@@ -8,6 +8,7 @@ import com.bugflix.weblog.post.dto.PostPreviewResponse;
 import com.bugflix.weblog.post.dto.PostRequest;
 import com.bugflix.weblog.post.dto.PostResponse;
 import com.bugflix.weblog.post.repository.PostRepository;
+import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.tag.domain.Tag;
 import com.bugflix.weblog.tag.repository.TagRepository;
 import com.bugflix.weblog.tag.service.TagServiceImpl;
@@ -15,6 +16,7 @@ import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class PostServiceImpl {
      * <p>
      * - Todo Spring Security Context의 user 정보를 불러와 post와 관계 mapping
      */
-    public void savePost(PostRequest postRequest) {
+    public void savePost(PostRequest postRequest, UserDetails userDetails) {
         String url = postRequest.getUrl();
 
         // Page
@@ -59,9 +61,7 @@ public class PostServiceImpl {
             return pageRepository.save(newPage);
         });
 
-        // Todo : JWT 의 User 정보로 교체 + 1,2 번 삭제
-        User user = new User("aaa", "bbb", "jo"); // 1
-        userService.saveUser(user); // 2
+        User user = ((CustomUserDetails)userDetails).getUser();
 
         // Post
         Post post = new Post(postRequest, user, page);
@@ -110,13 +110,15 @@ public class PostServiceImpl {
      * - postId 로 Post Entity 탐색
      * - Post 존재하지 않으면 예외처리, 존재하면 출력
      */
-    public PostResponse getPost(Long postId) throws Exception {
+    public PostResponse getPost(Long postId, UserDetails userDetails) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
         PostResponse postResponse = new PostResponse(post);
+
+        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
         // Todo 1. post Update Logic 구성
         postResponse.setNickname(userService.findNicknameByPostId(postId));
         postResponse.setTags(tagService.findTagsByPostId(postId));
-        postResponse.setLike(likeServiceImpl.isLiked(postId, (long) 1));
+        postResponse.setLike(likeServiceImpl.isLiked(postId, userId));
         postResponse.setLikeCount(likeServiceImpl.countLikes(postId));
 
         return postResponse;
@@ -153,19 +155,20 @@ public class PostServiceImpl {
      * Explanation :
      * - 페이지 내의 모든 post 미리 보기 목록 반환
      */
-    public List<PostPreviewResponse> getPostPreview(String url) {
+    public List<PostPreviewResponse> getPostPreview(String url, UserDetails userDetails) {
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
 
         List<Post> postList = postRepository.findByPageUrl(url);
+        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
-        for (Post post : postList) {
+        for(Post post : postList) {
             Long postId = post.getPostId();
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
                     post,
                     tagRepository.findTagsByPostPostId(postId),
                     userService.findNicknameByPostId(postId),
-                    likeServiceImpl.isLiked(postId, (long) 1),    // Todo User Id로 변경
+                    likeServiceImpl.isLiked(postId, userId),
                     post.getCreatedDate(),
                     post.getModifiedDate(),
                     likeServiceImpl.countLikes(postId));
@@ -187,8 +190,9 @@ public class PostServiceImpl {
      * Explanation :
      * - 페이지 내에서 내가 작성한 post 미리 보기 목록 반환
      */
-    public List<PostPreviewResponse> getMyPostPreview(String url) {
-        List<Post> posts = postRepository.findByPageUrlAndUserUserId(url, (long) 1);
+    public List<PostPreviewResponse> getMyPostPreview(String url, UserDetails userDetails) {
+        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        List<Post> posts = postRepository.findByPageUrlAndUserUserId(url, userId);
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
 
         for (Post post : posts) {
@@ -198,7 +202,7 @@ public class PostServiceImpl {
                     post,
                     tagRepository.findTagsByPostPostId(postId),
                     userService.findNicknameByPostId(postId),
-                    likeServiceImpl.isLiked(postId, (long) 1),    // Todo User Id 로 변경
+                    likeServiceImpl.isLiked(postId, userId),
                     post.getCreatedDate(),
                     post.getModifiedDate(),
                     likeServiceImpl.countLikes(postId));

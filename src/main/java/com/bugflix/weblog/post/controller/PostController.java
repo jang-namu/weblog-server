@@ -1,15 +1,15 @@
 package com.bugflix.weblog.post.controller;
 
 import com.bugflix.weblog.post.dto.PostPreviewResponse;
-import com.bugflix.weblog.post.service.PostServiceImpl;
+import com.bugflix.weblog.post.dto.PostRequest;
 import com.bugflix.weblog.post.dto.PostResponse;
+import com.bugflix.weblog.post.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import com.bugflix.weblog.post.dto.PostRequest;
 
 import java.util.List;
 
@@ -85,9 +85,10 @@ public class PostController {
      * - 2. post_id 로 post 검색
      */
     @GetMapping("/v1/posts/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) throws Exception {
+    public ResponseEntity<PostResponse> getPost(@PathVariable Long postId,
+                                                @AuthenticationPrincipal UserDetails userDetails) throws Exception {
 
-        return ResponseEntity.ok(postServiceImpl.getPost(postId));
+        return ResponseEntity.ok(postServiceImpl.getPost(postId, userDetails));
     }
 
     /**
@@ -128,9 +129,10 @@ public class PostController {
      * - 1. extension 에서 post 목록 요청
      */
     @GetMapping("/v1/posts/preview")
-    public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam(name = "url") String url) {
+    public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam(name = "url") String url,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
 
-        return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
+        return ResponseEntity.ok(postServiceImpl.getPostPreview(url, userDetails));
     }
 
     /**
@@ -144,9 +146,10 @@ public class PostController {
      * - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
      */
     @GetMapping("/v1/posts/mine")
-    public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url") String url) {
+    public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url") String url,
+                                                                      @AuthenticationPrincipal UserDetails userDetails) {
 
-        return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url));
+        return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url, userDetails));
     }
 
     /**
