@@ -1,4 +1,4 @@
-src/**/application.properties
+application.properties
 **/docker/
 
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij+all,macos,windows,gradle
