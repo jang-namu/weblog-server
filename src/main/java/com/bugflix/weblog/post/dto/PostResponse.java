@@ -1,13 +1,11 @@
 package com.bugflix.weblog.post.dto;
 
-import com.bugflix.weblog.profile.Profile;
-import com.bugflix.weblog.tag.Tag;
-import com.bugflix.weblog.user.User;
+import com.bugflix.weblog.tag.domain.Tag;
+import com.bugflix.weblog.user.domain.User;
 import lombok.Data;
-import com.bugflix.weblog.post.Post;
+import com.bugflix.weblog.post.domain.Post;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
