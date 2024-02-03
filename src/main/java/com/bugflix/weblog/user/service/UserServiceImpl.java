@@ -49,10 +49,6 @@ public class UserServiceImpl {
         userRepository.delete(user);
     }
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
-
     public String findNicknameByPostId(Long postId) {
         User user = userRepository.findByPosts_PostId(postId);
         return user.getNickname();
