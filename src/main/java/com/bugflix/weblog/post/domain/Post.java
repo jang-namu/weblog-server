@@ -30,7 +30,7 @@ public class Post extends BaseTimeEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String memo;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "LONGTEXT")
     private String imageUrl;
 
     @ManyToOne
