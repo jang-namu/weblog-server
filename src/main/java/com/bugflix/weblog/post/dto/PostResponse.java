@@ -26,7 +26,7 @@ public class PostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private PostResponse(Long postId, String title, List<TagResponse> tags, String content, String memo, Long likeCount, boolean isLike, String nickname, String profileImageUrl, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.postId = postId;
         this.title = title;
@@ -41,7 +41,7 @@ public class PostResponse {
         this.updatedDate = updatedDate;
     }
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private PostResponse(Long postId, String title, String content, String memo) {
         this.postId = postId;
         this.title = title;
