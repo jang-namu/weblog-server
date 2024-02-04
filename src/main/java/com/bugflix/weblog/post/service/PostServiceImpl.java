@@ -113,29 +113,17 @@ public class PostServiceImpl {
      */
     public PostResponse getPost(Long postId, UserDetails userDetails) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
-        PostResponse postResponse = new PostResponse(post);
-
+        User user = post.getUser();
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
-        // Todo 1. post Update Logic 구성
-        postResponse.setNickname(userService.findNicknameByPostId(postId));
-        postResponse.setTags(tagService.findTagsByPostId(postId));
-        postResponse.setLike(likeServiceImpl.isLiked(postId, userId));
-        postResponse.setLikeCount(likeServiceImpl.countLikes(postId));
-
-        return postResponse;
+        return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
+                likeServiceImpl.countLikes(postId), likeServiceImpl.isLiked(postId, userId));
     }
 
     public PostResponse getPost(Long postId) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
-        PostResponse postResponse = new PostResponse(post);
-
-        // Todo 1. post Update Logic 구성
-        postResponse.setNickname(userService.findNicknameByPostId(postId));
-        postResponse.setTags(tagService.findTagsByPostId(postId));
-        postResponse.setLike(false);
-        postResponse.setLikeCount(likeServiceImpl.countLikes(postId));
-
-        return postResponse;
+        User user = post.getUser();
+        return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
+                likeServiceImpl.countLikes(postId), false);
     }
 
     /**
@@ -152,11 +140,8 @@ public class PostServiceImpl {
     public List<PostResponse> getPosts(String url) {
 
         List<Post> resultList = postRepository.findByPageUrl(url);
-        List<PostResponse> resultArrayList = new ArrayList<>();
-
-        resultList.forEach(post -> resultArrayList.add(new PostResponse(post)));
         // Todo : Tag, LikeCount, Profile, nickname 등 추가 필요
-        return resultArrayList;
+        return resultList.stream().map(PostResponse::from).toList();
     }
 
     /**
