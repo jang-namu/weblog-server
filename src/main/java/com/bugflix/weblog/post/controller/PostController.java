@@ -92,7 +92,7 @@ public class PostController {
     }
 
     /**
-     * Name : getPost
+     * Name : getAllPost
      * Parameter :
      * - String url: web page 주소
      * Return :
