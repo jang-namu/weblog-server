@@ -65,6 +65,20 @@ public class CommentServiceImpl {
         } else {
             throw new IllegalArgumentException("invalid commentId");
         }
+    }
 
+    public void deleteComment(Long commentId, UserDetails userDetails) throws Exception {
+        // 1. commentId로 Comment 검색
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
+        // 2. userDetail 에서 user 정보 받아오기
+        User user = ((CustomUserDetails)userDetails).getUser();
+
+        // 3. user 정보와 comment 의 소유자가 동일한지 확인
+        if (comment.getUser() == user){
+            commentRepository.delete(comment);
+        } else {
+            throw new IllegalArgumentException("invalid commentId");
+        }
     }
 }
