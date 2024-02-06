@@ -18,7 +18,7 @@ public class Comment extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long id;
+    private Long commentId;
 
     private String content;
 
@@ -37,4 +37,23 @@ public class Comment extends BaseTimeEntity {
     @OneToMany(mappedBy = "parentComment")
     private List<Comment> childrenComment = new ArrayList<>();
 
+    public Comment(String content,User user, Post post){
+        this.user = user;
+        this.post = post;
+        this.content = content;
+    }
+    public Comment(String content,User user, Post post, Comment parentComment){
+        this(content,user,post);
+        this.parentComment = parentComment;
+    }
+    public static Comment of(String content,User user,Post post){
+        return new Comment(content,user,post);
+    }
+    public static Comment of(String content,User user, Post post, Comment parentComment){
+        return new Comment(content,user,post,parentComment);
+    }
+
+    public void updateContent(String content){
+        this.content = content;
+    }
 }
