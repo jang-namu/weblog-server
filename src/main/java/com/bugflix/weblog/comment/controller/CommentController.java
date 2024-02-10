@@ -29,9 +29,10 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 삭제",description = "사용자가 지정한 자신의 댓글 삭제")
-    @DeleteMapping("/v1/comments")
-    public ResponseEntity<Void> deleteComment(){
-
+    @DeleteMapping("/v1/comments/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable(name = "commentId")Long commentId,
+                                              @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+        commentService.deleteComment(commentId,userDetails);
         return ResponseEntity.ok().build();
     }
 
