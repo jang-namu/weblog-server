@@ -14,6 +14,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByPageUrlAndUserUserId(String url, Long userId);
 
+    List<Post> findByUserUserId(Long userId);
+
     @Query("select p from post_tb p where p.modifiedDate > :criterion order by p.likeCount desc")
     List<Post> findWithPagination(LocalDateTime criterion, Pageable pageable);
 

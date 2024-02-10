@@ -149,18 +149,24 @@ public class PostController {
      * Name : getMyPostPreview
      * Parameter :
      * - String url
+     * - UserDetail userDetail
      * Return :
      * - ResponseEntity<ArrayList<PostPreviewResponse>>
      * <p>
      * Explanation :
-     * - 특정 web page 에 있는 본인이 작성한 모든 post 의 preview 반환
+     * - 1. url이 입력되면 특정 웹페이지 내의 사용자 Post Preview를 전체 반환
+     * - 2. 입력되지 않으면 사용자 Post Preview를 전체 반환
      */
     @GetMapping("/v1/posts/mine")
-    @Operation(summary = "Post 미리보기 반환", description = "Page내의 사용자의 Post 미리보기를 반환합니다.")
-    public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url") String url,
+    @Operation(summary = "Post 미리보기 반환", description = "사용자의 Post 미리보기를 반환합니다.")
+    public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url", required = false) String url,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        List<PostPreviewResponse> postPreviewResponses;
 
-        return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url, userDetails));
+        if (url.isEmpty()) postPreviewResponses = postServiceImpl.getMyPostPreview(userDetails);
+        else postPreviewResponses = postServiceImpl.getMyPostPreview(url,userDetails);
+
+        return ResponseEntity.ok(postPreviewResponses);
     }
 
     /**

@@ -242,6 +242,32 @@ public class PostServiceImpl {
         }
         return postPreviews;
     }
+    /** 내가 작성한 모든 Post의 Preview를 반환*/
+    public List<PostPreviewResponse> getMyPostPreview(UserDetails userDetails){
+
+        ArrayList<PostPreviewResponse> postPreviews = new ArrayList<>();
+        // 1. User 정보 받아오기
+        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        // 2. Post Repository 에서 UserId로 Post 검색
+        List<Post> posts = postRepository.findByUserUserId(userId);
+        // 3. Post List PostPreviewResponse로 변환하여 반환
+        posts.forEach(post -> {
+            Long postId = post.getPostId();
+
+            PostPreviewResponse postPreview = new PostPreviewResponse(
+                    post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(TagResponse::from).toList(),
+                    userService.findNicknameByPostId(postId),
+                    likeServiceImpl.isLiked(postId, userId),
+                    post.getCreatedDate(),
+                    post.getModifiedDate(),
+                    likeServiceImpl.countLikes(postId));
+
+            postPreviews.add(postPreview);
+        });
+
+        return postPreviews;
+    }
 
     /**
      * Name : deletePost
