@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,55 +51,40 @@ public class SecurityConfiguration {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
                 // ID, Password 문자열을 Base64로 인코딩하여 전달하는 구조
-                .httpBasic().disable()
-                .csrf().disable()
-
-                // CORS 설정
-                .cors().configurationSource(corsConfigurationSource())
-
+                .httpBasic(HttpBasicConfigurer::disable)
+                .csrf(CsrfConfigurer::disable)
+                .cors(security -> {
+                    security.configurationSource(corsConfigurationSource());
+                })
                 // Spring Security 세션 정책 : 세션을 생성 및 사용하지 않음
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement(configurer ->
+                    configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> {
+                    authorize
+                            .requestMatchers(HttpMethod.POST, "/api/v1/posts").hasRole("USER")
+                            .requestMatchers(HttpMethod.PUT, "/api/v1/posts").hasRole("USER")
+                            .requestMatchers(HttpMethod.GET, "/api/v1/posts/mine").hasRole("USER")
+                            .requestMatchers(HttpMethod.DELETE, "/api/v1/posts/**").hasRole("USER")
+                            .requestMatchers(HttpMethod.PATCH, "/api/v1/likes/**").hasRole("USER")
+                            .requestMatchers(HttpMethod.GET, "/api/v1/posts", "/api/v1/posts/{postId}",
+                                    "/api/v1/posts/preview", "/api/v1/posts/**").permitAll()
 
-                // 조건별로 요청 허용/제한 설정
-                .and()
-                .authorizeRequests()
-
-                .requestMatchers(HttpMethod.POST, "/api/v1/posts").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/api/v1/posts").hasRole("USER")
-                .requestMatchers(HttpMethod.DELETE, "/api/v1/posts/**").hasRole("USER")
-
-                .requestMatchers(HttpMethod.GET, "/api/v1/posts/mine").hasRole("USER")
-
-                // 조회
-                .requestMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/posts/{postId}").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/posts/preview").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-
-                .requestMatchers(HttpMethod.PATCH, "/api/v1/likes/**").hasRole("USER")
-
-                .requestMatchers(PERMIT_TO_USER).hasRole("USER")
-                .requestMatchers(PERMIT_TO_ALL).permitAll()
-                .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
-                // FilterChain.doFilter(...) AccessDeniedException이 발생하던 이유는
-                // denyAll 때문이 아닌 @PostMapping(value)가 아닌 @PostMapping(name)으로 잘못작성했기 때문이였음.
-                .anyRequest().denyAll()
-
-                // JWT 인증 필터 적용
-                .and()
+                            .requestMatchers(PERMIT_TO_USER).hasRole("USER")
+                            .requestMatchers(PERMIT_TO_ALL).permitAll()
+                            .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
+                            .anyRequest().denyAll();
+                })
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 
-                // 에러 핸들링
-                .exceptionHandling()
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                .exceptionHandling(e -> e
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                );
 
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean
@@ -103,18 +92,10 @@ public class SecurityConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
-    /*
-        CorsConfig - https://toycoms.tistory.com/37
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-     */
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Cors 허용 패턴
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.addAllowedOrigin("*");
