@@ -36,6 +36,7 @@ public class PostServiceImpl {
     private final PostRepository postRepository;
     private final PageRepository pageRepository;
     private final LikeServiceImpl likeServiceImpl;
+    private final TagServiceImpl tagService;
     private final UserServiceImpl userService;
     private final TagRepository tagRepository;
 
@@ -119,16 +120,14 @@ public class PostServiceImpl {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
         User user = post.getUser();
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
-        return PostResponse.of(post, user,
-                tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+        return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
                 likeServiceImpl.countLikes(postId), likeServiceImpl.isLiked(postId, userId));
     }
 
     public PostResponse getPost(Long postId) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
         User user = post.getUser();
-        return PostResponse.of(post, user,
-                tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+        return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
                 likeServiceImpl.countLikes(postId), false);
     }
 
@@ -256,7 +255,7 @@ public class PostServiceImpl {
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
                     post,
-                    tagRepository.findTagsByPostPostId(postId).stream().map(TagResponse::from).toList(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
                     userService.findNicknameByPostId(postId),
                     likeServiceImpl.isLiked(postId, userId),
                     post.getCreatedDate(),

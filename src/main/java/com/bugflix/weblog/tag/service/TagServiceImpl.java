@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,8 +16,12 @@ import java.util.List;
 public class TagServiceImpl {
     private final TagRepository tagRepository;
 
-    public List<TagResponse> findTagsByPostId(Long postId) {
-        return tagRepository.findTagsByPostPostId(postId)
-                .stream().map(TagResponse::from).toList();
+    public List<String> findTagsByPostId(Long postId) {
+        List<Tag> tags = tagRepository.findTagsByPostPostId(postId);
+        ArrayList<String> tagContents = new ArrayList<>();
+
+        tags.forEach(tag -> { tagContents.add(tag.getTagContent()); } );
+
+        return tagContents;
     }
 }
