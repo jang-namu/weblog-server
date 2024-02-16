@@ -1,5 +1,9 @@
 package com.bugflix.weblog.post.controller;
 
+import com.bugflix.weblog.post.dto.PostPopularRequest;
+import com.bugflix.weblog.post.dto.PostPreviewResponse;
+import com.bugflix.weblog.post.dto.PostRequest;
+import com.bugflix.weblog.post.dto.PostResponse;
 import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -165,6 +169,11 @@ public class PostController {
 
         postServiceImpl.deletePost(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/v1/posts/ranks")
+    public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@ModelAttribute PostPopularRequest postPopularRequest) {
+        return ResponseEntity.ok(postServiceImpl.getPopularPosts(postPopularRequest));
     }
 
     @GetMapping("/v1/search/posts")

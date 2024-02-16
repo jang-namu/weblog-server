@@ -4,12 +4,15 @@ import com.bugflix.weblog.like.service.LikeServiceImpl;
 import com.bugflix.weblog.page.domain.Page;
 import com.bugflix.weblog.page.repository.PageRepository;
 import com.bugflix.weblog.post.domain.Post;
+import com.bugflix.weblog.post.dto.PostPopularRequest;
+import com.bugflix.weblog.post.dto.PostPreviewResponse;
+import com.bugflix.weblog.post.dto.PostRequest;
+import com.bugflix.weblog.post.dto.PostResponse;
 import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.tag.domain.Tag;
 import com.bugflix.weblog.tag.repository.TagRepository;
-import com.bugflix.weblog.tag.service.TagServiceImpl;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -255,6 +259,35 @@ public class PostServiceImpl {
         // Todo Global Exception Handler 생성
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid Post Id"));
         postRepository.delete(post);
+    }
+
+    public List<PostPreviewResponse> getPopularPosts(PostPopularRequest postPopularRequest) {
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
+
+        LocalDateTime criterion = LocalDateTime.now().minusDays(postPopularRequest.getType().getValue());
+
+        List<Post> postList = postRepository.findWithPagination(
+                criterion,
+                // todo: offset -> 0, 1, 2순으로 클라이언트 코드 수정 or API 서버에서 공통처리하는 로직 작성
+                PageRequest.of(postPopularRequest.getOffset() / postPopularRequest.getLimit(),
+                postPopularRequest.getLimit()));
+
+        // todo stream으로 개선
+        for(Post post : postList) {
+            Long postId = post.getPostId();
+
+            PostPreviewResponse postPreview = new PostPreviewResponse(
+                    post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    userService.findNicknameByPostId(postId),
+                    false,  // todo 로그인 상태 시 like 상태 조회하도록 수정
+                    post.getCreatedDate(),
+                    post.getModifiedDate(),
+                    post.getLikeCount());
+
+            postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
+        }
+        return postPreviews;
     }
 
     public List<PostSearchResponse> searchPost(PostSearchRequest postSearchRequest) {
