@@ -3,8 +3,10 @@ package com.bugflix.weblog.like.service;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
+import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class LikeServiceImpl {
         return likeRepository.existsLikeById_PostIdAndId_UserId(postId, userId);
     }
 
-    public Long countLikes(Long postId) {
+    public Long  countLikes(Long postId) {
         return likeRepository.countById_PostId(postId);
     }
 
@@ -39,17 +41,20 @@ public class LikeServiceImpl {
      * <p>
      * - isLiked 와 likeCount 를 LikeStatusResponse 로 encapsulation 하여 반환
      */
+    @Transactional
     public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) throws Exception {
-        postRepository.findById(postId).orElseThrow(() -> new Exception("해당하는 Post를 찾을 수 없습니다"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception("해당하는 Post를 찾을 수 없습니다"));
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
         Like like = likeRepository.findById_UserIdAndId_PostId(userId, postId);
 
         if (like != null) {
             likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic
+            post.setUnLike();
             return new LikeStatusResponse(likeRepository.countById_PostId(postId), false);
         }
         likeRepository.save(new Like(userId, postId));
+        post.setLike();
         return new LikeStatusResponse(likeRepository.countById_PostId(postId), true);
 
     }

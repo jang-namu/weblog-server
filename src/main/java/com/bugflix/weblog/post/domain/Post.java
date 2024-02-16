@@ -44,6 +44,8 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
 
+    @Column(name = "like_count")
+    private Long likeCount = 0L;
 
     public Post(PostRequest postRequest) {
         title = postRequest.getTitle();
@@ -68,5 +70,13 @@ public class Post extends BaseTimeEntity {
 
     public void updateMemo(String memo) {
         this.memo = memo;
+    }
+
+    public void setLike() {
+        this.likeCount += 1;
+    }
+
+    public void setUnLike() {
+        this.likeCount -= 1;
     }
 }
