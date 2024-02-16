@@ -1,7 +1,6 @@
 package com.bugflix.weblog.post.dto;
 
 import com.bugflix.weblog.post.domain.Post;
-import com.bugflix.weblog.tag.dto.TagResponse;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,7 @@ public class PostPreviewResponse {
     private Long postId;
     private String title;
     private String nickname;
-    private List<TagResponse> tags;
+    private List<String> tags;
     private Long likeCount;
     private Boolean isLiked;
     private String imageUrl;
@@ -21,7 +20,7 @@ public class PostPreviewResponse {
 
     public PostPreviewResponse(
             Post post,
-            List<TagResponse> tags,
+            List<String> tags,
             String nickname,
             Boolean isLiked,
             LocalDateTime createdDate,

@@ -1,7 +1,6 @@
 package com.bugflix.weblog.post.dto;
 
 import com.bugflix.weblog.post.domain.Post;
-import com.bugflix.weblog.tag.dto.TagResponse;
 import com.bugflix.weblog.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +15,7 @@ import java.util.List;
 public class PostResponse {
     private Long postId;
     private String title;
-    private List<TagResponse> tags;
+    private List<String> tags;
     private String content;
     private String memo;
     private Long likeCount;
@@ -27,7 +26,7 @@ public class PostResponse {
     private LocalDateTime updatedDate;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private PostResponse(Long postId, String title, List<TagResponse> tags, String content, String memo, Long likeCount, boolean isLike, String nickname, String profileImageUrl, LocalDateTime createdDate, LocalDateTime updatedDate) {
+    private PostResponse(Long postId, String title, List<String> tags, String content, String memo, Long likeCount, boolean isLike, String nickname, String profileImageUrl, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.postId = postId;
         this.title = title;
         this.tags = tags;
@@ -49,7 +48,7 @@ public class PostResponse {
         this.memo = memo;
     }
 
-    public static PostResponse of(Post post, User user, List<TagResponse> tags, Long likeCount, Boolean isLike) {
+    public static PostResponse of(Post post, User user, List<String> tags, Long likeCount, Boolean isLike) {
         return PostResponse.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())
