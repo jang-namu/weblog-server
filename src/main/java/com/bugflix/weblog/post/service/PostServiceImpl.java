@@ -4,9 +4,7 @@ import com.bugflix.weblog.like.service.LikeServiceImpl;
 import com.bugflix.weblog.page.domain.Page;
 import com.bugflix.weblog.page.repository.PageRepository;
 import com.bugflix.weblog.post.domain.Post;
-import com.bugflix.weblog.post.dto.PostPreviewResponse;
-import com.bugflix.weblog.post.dto.PostRequest;
-import com.bugflix.weblog.post.dto.PostResponse;
+import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.tag.domain.Tag;
@@ -17,12 +15,16 @@ import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -253,5 +255,42 @@ public class PostServiceImpl {
         // Todo Global Exception Handler 생성
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid Post Id"));
         postRepository.delete(post);
+    }
+
+    public List<PostSearchResponse> searchPost(PostSearchRequest postSearchRequest) {
+        return switch (postSearchRequest.getType()) {
+            case TAG -> searchByTag(postSearchRequest);
+            case CONTENT -> searchByContent(postSearchRequest);
+            case TAG_AND_CONTENT -> searchByTagAndContent(postSearchRequest);
+        };
+    }
+
+    private List<PostSearchResponse> searchByTag(PostSearchRequest postSearchRequest) {
+        List<Post> posts = postRepository.findPostsByTagContent(postSearchRequest.getQuery(),
+                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
+                        postSearchRequest.getLimit()));
+        return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
+                e.getTags().stream().map(Tag::getTagContent).toList())).toList();
+    }
+
+    private List<PostSearchResponse> searchByContent(PostSearchRequest postSearchRequest) {
+        List<Post> posts = postRepository.findPostsByTitleLike(postSearchRequest.getQuery(),
+                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
+                        postSearchRequest.getLimit()));
+        return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
+                e.getTags().stream().map(Tag::getTagContent).toList())).toList();
+    }
+
+    private List<PostSearchResponse> searchByTagAndContent(PostSearchRequest postSearchRequest) {
+        List<Post> postsByTag = postRepository.findPostsByTagContent(postSearchRequest.getQuery(),
+                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
+                        postSearchRequest.getLimit()));
+        List<Post> postsByContent = postRepository.findPostsByTitleLike(postSearchRequest.getQuery(),
+                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
+                        postSearchRequest.getLimit()));
+
+        Set<Post> posts = Stream.concat(postsByTag.stream(), postsByContent.stream()).collect(Collectors.toSet());
+        return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
+                e.getTags().stream().map(Tag::getTagContent).toList())).limit(postSearchRequest.getLimit()).toList();
     }
 }

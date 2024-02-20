@@ -1,8 +1,6 @@
 package com.bugflix.weblog.post.controller;
 
-import com.bugflix.weblog.post.dto.PostPreviewResponse;
-import com.bugflix.weblog.post.dto.PostRequest;
-import com.bugflix.weblog.post.dto.PostResponse;
+import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.service.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -169,4 +167,8 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/v1/search/posts")
+    public ResponseEntity<List<PostSearchResponse>> searchPost(@ModelAttribute PostSearchRequest postSearchRequest) {
+        return ResponseEntity.ok(postServiceImpl.searchPost(postSearchRequest));
+    }
 }
