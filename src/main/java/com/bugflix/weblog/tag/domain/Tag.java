@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity(name = "tag_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag extends BaseTimeEntity {
@@ -16,7 +17,7 @@ public class Tag extends BaseTimeEntity {
     @Column(name = "tag_id")
     private Long tagId;
 
-    @Getter
+    @Column(name = "tag_content")
     private String tagContent;
 
     @ManyToOne
