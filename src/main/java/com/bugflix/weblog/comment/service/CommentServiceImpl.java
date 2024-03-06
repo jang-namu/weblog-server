@@ -23,62 +23,72 @@ public class CommentServiceImpl {
     /**
      * Name : saveComment
      * Parameter :
-     *  - CommentRequest commentRequest : 댓글 작성 요청
+     * - CommentRequest commentRequest : 댓글 작성 요청
      * Return :
-     *  - void
+     * - void
      * Explanation :
-     *  - 인증된 사용자의 Post에 대한 댓글 작성 요청을 받음.
-     *  - Post 정보를 DB에 저장
-     *    - 성공 : void
-     *    - 실패 : Exception 반환
-     * */
+     * - 인증된 사용자의 Post에 대한 댓글 작성 요청을 받음.
+     * - Post 정보를 DB에 저장
+     * - 성공 : void
+     * - 실패 : Exception 반환
+     */
     public void saveComment(CommentRequest commentRequest, UserDetails userDetails) throws Exception {
         // 1. User 객체 검색
-        User user;
-        if (userDetails != null){
-            user = ((CustomUserDetails)userDetails).getUser();
-        } else {
-            throw new AuthenticationException("not allow comment");
-        }
+        User user = ((CustomUserDetails) userDetails).getUser();
+
         // 2. Post 객체 검색
         Post post = postRepository.findById(commentRequest.getPostId())
-                .orElseThrow(()-> new IllegalArgumentException("invalid postId"));
+                .orElseThrow(() -> new IllegalArgumentException("invalid postId"));
 
         // 3. Comment 객체 생성
-        Comment comment = Comment.of(commentRequest.getContent(),user,post);
+        Comment comment;
+        if (commentRequest.getParentCommentId() != null) {
+            comment = Comment.of(commentRequest.getContent(), user, post);
+        } else {
+            Comment parentComment = commentRepository.findById(commentRequest.getParentCommentId())
+                    .orElseThrow(() -> new IllegalArgumentException("parentComment를 찾을 수 없습니다."));
+            comment = Comment.of(commentRequest.getContent(), user, post,parentComment);
+        }
 
         // 4. Comment 저장
         commentRepository.save(comment);
     }
 
-    public void updateComment(Long commentId, String content,UserDetails userDetails) throws Exception {
+    public void updateComment(Long commentId, String content, UserDetails userDetails) throws Exception {
+        // 1. User 객체 검색
+        User user = ((CustomUserDetails) userDetails).getUser();
 
-        // 1. commentId로 Comment 검색
+        // 2. commentId로 Comment 검색
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
-        // 2. userDetail 에서 user 정보 받아오기
-        User user = ((CustomUserDetails)userDetails).getUser();
 
-        if (comment.getUser() == user){
+        /*
+         todo: 1.시큐리티 컨텍스트의 UserDetails와 comment의 소유주인 User가
+          서로 다른 엔티티 매니저에 의해 관리되면 조건문이 계속 false가 되진 않는지
+         todo: 2.Transactional 어노테이션을 사용하지 않아도 comment.getUser()가 가능한가?
+          => ManyToOne 연관관계로 기본 Fetch 전략이 EAGER
+         */
+        if (comment.getUser() == user) {
             // 3. Comment 의 내용 update
             comment.updateContent(content);
         } else {
-            throw new IllegalArgumentException("invalid commentId");
+            throw new IllegalArgumentException("Only writer can update");
         }
     }
 
     public void deleteComment(Long commentId, UserDetails userDetails) throws Exception {
-        // 1. commentId로 Comment 검색
+        // 1. userDetail 에서 user 정보 받아오기
+        User user = ((CustomUserDetails) userDetails).getUser();
+
+        // 2. commentId로 Comment 검색
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
-        // 2. userDetail 에서 user 정보 받아오기
-        User user = ((CustomUserDetails)userDetails).getUser();
 
         // 3. user 정보와 comment 의 소유자가 동일한지 확인
-        if (comment.getUser() == user){
+        if (comment.getUser() == user) {
             commentRepository.delete(comment);
         } else {
-            throw new IllegalArgumentException("invalid commentId");
+            throw new IllegalArgumentException("Only writer can delete");
         }
     }
 }
