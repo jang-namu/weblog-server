@@ -10,16 +10,17 @@ public class ProfileResponse {
     private String imageUrl;
     private String email;
 
-    public ProfileResponse(User user, Profile profile){
+    private ProfileResponse(User user, Profile profile) {
         nickname = user.getNickname();
         email = user.getEmail();
 
         // imageURL null check
-        if (!profile.getImageUrl().isEmpty()){
+        if (!(profile.getImageUrl().isEmpty())) {
             this.imageUrl = profile.getImageUrl();
         }
     }
-    public static ProfileResponse of (User user, Profile profile) {
-        return new ProfileResponse(user,profile);
+
+    public static ProfileResponse of(User user, Profile profile) {
+        return new ProfileResponse(user, profile);
     }
 }

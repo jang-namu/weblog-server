@@ -18,16 +18,16 @@ public class ProfileServiceImpl {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
-    /** 나의 Profile 반환*/
-    public ProfileResponse getMyProfile(UserDetails userDetails) throws Exception {
+    /**
+     * 나의 Profile 반환
+     */
+    public ProfileResponse getMyProfile(UserDetails userDetails) {
         // 1. userId로 Profile 검색
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        User user = ((CustomUserDetails) userDetails).getUser();
 
-        Profile profile = profileRepository.findByUserUserId(userId);
+        Profile profile = profileRepository.findByUserUserId(user.getUserId());
 
-        // 2. 변환 ( Profile -> ProfileResponse ) & 반환
-        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("authentication error"));
-        return ProfileResponse.of(user,profile);
+        return ProfileResponse.of(user, profile);
 
     }
 }

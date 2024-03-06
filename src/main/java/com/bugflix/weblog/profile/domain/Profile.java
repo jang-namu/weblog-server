@@ -19,9 +19,9 @@ public class Profile extends BaseTimeEntity {
     @Column(name="profile_id")
     private Long profileId;
 
-    // CascadeType.ALL ?
-    // targetEntity? mappedBy?
-    // 1대1 매핑 best practice?
+    // todo 1. CascadeType.ALL ?
+    // todo 2. targetEntity? mappedBy?
+    // todo 3. 1대1 매핑 best practice?
     @JoinColumn(name = "user_id")
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
