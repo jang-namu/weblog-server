@@ -20,7 +20,9 @@ public class TagServiceImpl {
         List<Tag> tags = tagRepository.findTagsByPostPostId(postId);
         ArrayList<String> tagContents = new ArrayList<>();
 
-        tags.forEach(tag -> { tagContents.add(tag.getTagContent()); } );
+        tags.forEach(tag -> {
+            tagContents.add(tag.getTagContent());
+        });
 
         return tagContents;
     }
