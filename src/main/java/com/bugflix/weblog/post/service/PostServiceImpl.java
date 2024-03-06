@@ -67,7 +67,7 @@ public class PostServiceImpl {
             return pageRepository.save(newPage);
         });
 
-        User user = ((CustomUserDetails)userDetails).getUser();
+        User user = ((CustomUserDetails) userDetails).getUser();
 
         // Post
         Post post = new Post(postRequest, user, page);
@@ -119,7 +119,8 @@ public class PostServiceImpl {
     public PostResponse getPost(Long postId, UserDetails userDetails) throws Exception {
         Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
         User user = post.getUser();
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+
         return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
                 likeServiceImpl.countLikes(postId), likeServiceImpl.isLiked(postId, userId));
     }
@@ -164,9 +165,9 @@ public class PostServiceImpl {
 
         List<Post> postList = postRepository.findByPageUrl(url);
 
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
 
-        for(Post post : postList) {
+        for (Post post : postList) {
             Long postId = post.getPostId();
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
@@ -190,7 +191,7 @@ public class PostServiceImpl {
 
         List<Post> postList = postRepository.findByPageUrl(url);
 
-        for(Post post : postList) {
+        for (Post post : postList) {
             Long postId = post.getPostId();
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
@@ -221,7 +222,7 @@ public class PostServiceImpl {
      * - 페이지 내에서 내가 작성한 post 미리 보기 목록 반환
      */
     public List<PostPreviewResponse> getMyPostPreview(String url, UserDetails userDetails) {
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
         List<Post> posts = postRepository.findByPageUrlAndUserUserId(url, userId);
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
 
@@ -241,12 +242,15 @@ public class PostServiceImpl {
         }
         return postPreviews;
     }
-    /** 내가 작성한 모든 Post의 Preview를 반환*/
-    public List<PostPreviewResponse> getMyPostPreview(UserDetails userDetails){
 
-        ArrayList<PostPreviewResponse> postPreviews = new ArrayList<>();
+    /**
+     * 내가 작성한 모든 Post의 Preview를 반환
+     */
+    public List<PostPreviewResponse> getMyPostPreview(UserDetails userDetails) {
+
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
         // 1. User 정보 받아오기
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
         // 2. Post Repository 에서 UserId로 Post 검색
         List<Post> posts = postRepository.findByUserUserId(userId);
         // 3. Post List PostPreviewResponse로 변환하여 반환
