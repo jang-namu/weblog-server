@@ -21,7 +21,7 @@ public class LikeController {
 
     @PatchMapping("/v1/likes/{postId}")
     @Operation(summary = "좋아요 정보 반환", description = "Post의 좋아요 개수, 나의 좋아요 여부 반환")
-    public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable(name = "postId") Long postId,
+    public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable Long postId,
                                                                @AuthenticationPrincipal UserDetails userDetails) throws Exception {
         return ResponseEntity.ok(likeServiceImpl.changeLikeStatus(postId, userDetails));
     }
