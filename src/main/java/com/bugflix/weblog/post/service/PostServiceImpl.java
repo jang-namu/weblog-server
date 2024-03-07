@@ -13,6 +13,7 @@ import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.tag.domain.Tag;
 import com.bugflix.weblog.tag.repository.TagRepository;
+import com.bugflix.weblog.tag.service.TagServiceImpl;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;

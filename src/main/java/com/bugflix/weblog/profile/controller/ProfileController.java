@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ public class ProfileController {
 
     @GetMapping("/v1/profiles/mine")
     @Operation(summary = "Profile 조회", description = "사용자 본인 Profile을 조회합니다.")
-    public ResponseEntity<ProfileResponse> getMyProfile(UserDetails userDetails) throws Exception {
+    public ResponseEntity<ProfileResponse> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
 
         return ResponseEntity.ok(profileService.getMyProfile(userDetails));
     }
