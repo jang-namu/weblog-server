@@ -45,7 +45,8 @@ public class SecurityConfiguration {
     private static final String[] PERMIT_TO_ALL = {
             "/api/v1/users",
             "/api/v1/auths/login",
-            "/api/v1/auths/reissue"
+            "/api/v1/auths/reissue",
+            "/api/v1/healthcheck"
     };
 
     @Bean
