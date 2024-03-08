@@ -14,8 +14,7 @@ public class ProfileResponse {
         nickname = user.getNickname();
         email = user.getEmail();
 
-        // imageURL null check
-        if (!(profile.getImageUrl().isEmpty())) {
+        if (profile.getImageUrl() != null) {
             this.imageUrl = profile.getImageUrl();
         }
     }
