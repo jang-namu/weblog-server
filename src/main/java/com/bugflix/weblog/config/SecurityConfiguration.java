@@ -75,7 +75,7 @@ public class SecurityConfiguration {
                             .requestMatchers(PERMIT_TO_USER).hasRole("USER")
                             .requestMatchers(PERMIT_TO_ALL).permitAll()
                             .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
-                            .anyRequest().denyAll();
+                            .anyRequest().hasRole("USER");
                 })
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 
