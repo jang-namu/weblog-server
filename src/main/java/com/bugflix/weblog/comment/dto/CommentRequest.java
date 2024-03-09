@@ -15,7 +15,6 @@ import lombok.Setter;
 public class CommentRequest {
     @NotBlank(message = "not allow blank comment")
     private String content;
-    @Null
     private Long parentCommentId;
     @NotNull
     private Long postId;

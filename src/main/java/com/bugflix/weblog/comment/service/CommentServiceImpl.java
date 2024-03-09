@@ -43,11 +43,11 @@ public class CommentServiceImpl {
         // 3. Comment 객체 생성
         Comment comment;
         if (commentRequest.getParentCommentId() != null) {
-            comment = Comment.of(commentRequest.getContent(), user, post);
-        } else {
             Comment parentComment = commentRepository.findById(commentRequest.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("parentComment를 찾을 수 없습니다."));
-            comment = Comment.of(commentRequest.getContent(), user, post,parentComment);
+            comment = Comment.of(commentRequest.getContent(), user, post, parentComment);
+        } else {
+            comment = Comment.of(commentRequest.getContent(), user, post);
         }
 
         // 4. Comment 저장
