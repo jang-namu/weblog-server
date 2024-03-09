@@ -8,6 +8,7 @@ import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.service.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class PostController {
      */
     @PostMapping("/v1/posts")
     @Operation(summary = "Post 저장",description = "사용자가 작성한 Post를 저장합니다.")
-    public ResponseEntity<Void> savePost(@RequestBody PostRequest postRequest,
+    public ResponseEntity<Void> savePost(@Valid @RequestBody PostRequest postRequest,
                                          @AuthenticationPrincipal UserDetails userDetails) {
         postServiceImpl.savePost(postRequest, userDetails);
         return ResponseEntity.ok().build();
@@ -69,7 +70,7 @@ public class PostController {
      */
     @PutMapping("/v1/posts")
     @Operation(summary = "Post 수정", description = "사용자가 자신이 작성한 Post를 수정하여 저장합니다.")
-    public ResponseEntity<Void> updatePost(@RequestBody PostRequest postRequest, @RequestParam(name = "postId") Long postId) throws Exception {
+    public ResponseEntity<Void> updatePost(@Valid @RequestBody PostRequest postRequest, @RequestParam(name = "postId") Long postId) throws Exception {
         postServiceImpl.updatePost(postRequest, postId);
         return ResponseEntity.ok().build();
     }

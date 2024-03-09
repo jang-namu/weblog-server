@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,9 @@ public class PostServiceImpl {
     private final PostRepository postRepository;
     private final PageRepository pageRepository;
     private final LikeServiceImpl likeServiceImpl;
-    private final TagServiceImpl tagService;
     private final UserServiceImpl userService;
     private final TagRepository tagRepository;
+    private final TagServiceImpl tagService;
 
 
     /**

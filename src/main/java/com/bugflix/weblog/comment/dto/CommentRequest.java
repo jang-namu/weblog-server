@@ -19,3 +19,5 @@ public class CommentRequest {
     @NotNull
     private Long postId;
 }
+
+// CommentRequest -> Controller -> Service -> ?!?

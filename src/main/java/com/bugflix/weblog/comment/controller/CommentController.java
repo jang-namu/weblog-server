@@ -4,6 +4,7 @@ import com.bugflix.weblog.comment.dto.CommentRequest;
 import com.bugflix.weblog.comment.service.CommentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 저장", description = "사용자가 작성한 댓글 저장")
     @PostMapping("/v1/comments")
-    public ResponseEntity<Void> saveComment(@Validated @RequestBody CommentRequest commentRequest,
+    public ResponseEntity<Void> saveComment(@Valid @RequestBody CommentRequest commentRequest,
                                             @AuthenticationPrincipal UserDetails userDetails) throws Exception {
         commentService.saveComment(commentRequest, userDetails);
         return ResponseEntity.ok().build();
