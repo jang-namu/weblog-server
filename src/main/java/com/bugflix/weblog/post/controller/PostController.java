@@ -163,7 +163,7 @@ public class PostController {
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
         List<PostPreviewResponse> postPreviewResponses;
 
-        if (url.isEmpty()) postPreviewResponses = postServiceImpl.getMyPostPreview(userDetails);
+        if (url == null) postPreviewResponses = postServiceImpl.getMyPostPreview(userDetails);
         else postPreviewResponses = postServiceImpl.getMyPostPreview(url,userDetails);
 
         return ResponseEntity.ok(postPreviewResponses);
