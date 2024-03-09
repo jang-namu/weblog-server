@@ -1,6 +1,7 @@
 package com.bugflix.weblog.comment.controller;
 
 import com.bugflix.weblog.comment.dto.CommentRequest;
+import com.bugflix.weblog.comment.dto.CommentResponse;
 import com.bugflix.weblog.comment.service.CommentServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Comment API", description = "댓글 관련 API")
@@ -44,5 +47,11 @@ public class CommentController {
                                               @AuthenticationPrincipal UserDetails userDetails) throws Exception {
         commentService.updateComment(commentId, content, userDetails);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "댓글 조회", description = "")
+    @GetMapping("/v1/comments/{pageUrl}")
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable String pageUrl) {
+        return ResponseEntity.ok(commentService.getComment(pageUrl));
     }
 }

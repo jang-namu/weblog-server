@@ -2,6 +2,7 @@ package com.bugflix.weblog.comment.service;
 
 import com.bugflix.weblog.comment.domain.Comment;
 import com.bugflix.weblog.comment.dto.CommentRequest;
+import com.bugflix.weblog.comment.dto.CommentResponse;
 import com.bugflix.weblog.comment.repository.CommentRepository;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -90,5 +93,19 @@ public class CommentServiceImpl {
         } else {
             throw new IllegalArgumentException("Only writer can delete");
         }
+    }
+
+    public List<CommentResponse> getComment(String url)  {
+
+        ArrayList<CommentResponse> commentResponses = new ArrayList<>();
+        // 1. 댓글 검색
+        List<Comment> comments = commentRepository.findByPostPageUrl(url);
+        // 2. 댓글을 작성한 User 정보
+        for (Comment comment : comments) {
+            User user = comment.getUser();
+            commentResponses.add(CommentResponse.of(comment,user,user.getProfile()));
+        }
+
+        return commentResponses;
     }
 }
