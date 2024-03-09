@@ -5,6 +5,7 @@ import com.bugflix.weblog.user.dto.SignUpRequest;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "신규 사용자 정보를 등록합니다.")
     @PostMapping("/v1/users")
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         userService.register(signUpRequest);
         return ResponseEntity.ok().build();
     }
@@ -29,7 +30,7 @@ public class UserController {
     @Operation(summary = "회원탈퇴",
             description = "아이디(email)과 비밀번호 일치여부를 확인하고, 일치하다면 회원 정보를 삭제합니다.")
     @DeleteMapping("/v1/users")
-    public ResponseEntity<Void> unregister(@RequestBody SignInRequest signInRequest) throws Exception {
+    public ResponseEntity<Void> unregister(@Valid @RequestBody SignInRequest signInRequest) throws Exception {
         userService.unregister(signInRequest);
         return ResponseEntity.ok().build();
     }
