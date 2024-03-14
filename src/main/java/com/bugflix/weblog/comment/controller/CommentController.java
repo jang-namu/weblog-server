@@ -50,8 +50,8 @@ public class CommentController {
     }
 
     @Operation(summary = "댓글 조회", description = "")
-    @GetMapping("/v1/comments/{pageUrl}")
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable String pageUrl) {
+    @GetMapping("/v1/comments")
+    public ResponseEntity<List<CommentResponse>> getComments(@RequestParam String pageUrl) {
         return ResponseEntity.ok(commentService.getComment(pageUrl));
     }
 }
