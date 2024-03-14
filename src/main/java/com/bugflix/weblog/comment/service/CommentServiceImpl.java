@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class CommentServiceImpl {
      * - 성공 : void
      * - 실패 : Exception 반환
      */
-    public void saveComment(CommentRequest commentRequest, UserDetails userDetails) throws Exception {
+    public void saveComment(CommentRequest commentRequest, UserDetails userDetails) {
         // 1. User 객체 검색
         User user = ((CustomUserDetails) userDetails).getUser();
 
@@ -57,7 +56,7 @@ public class CommentServiceImpl {
         commentRepository.save(comment);
     }
 
-    public void updateComment(Long commentId, String content, UserDetails userDetails) throws Exception {
+    public void updateComment(Long commentId, String content, UserDetails userDetails) {
         // 1. User 객체 검색
         User user = ((CustomUserDetails) userDetails).getUser();
 
@@ -79,7 +78,7 @@ public class CommentServiceImpl {
         }
     }
 
-    public void deleteComment(Long commentId, UserDetails userDetails) throws Exception {
+    public void deleteComment(Long commentId, UserDetails userDetails) {
         // 1. userDetail 에서 user 정보 받아오기
         User user = ((CustomUserDetails) userDetails).getUser();
 
