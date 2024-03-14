@@ -95,15 +95,14 @@ public class CommentServiceImpl {
         }
     }
 
-    public List<CommentResponse> getComment(String url)  {
-
-        ArrayList<CommentResponse> commentResponses = new ArrayList<>();
+    public List<CommentResponse> getComment(String url) {
+        List<CommentResponse> commentResponses = new ArrayList<>();
         // 1. 댓글 검색
-        List<Comment> comments = commentRepository.findByPostPageUrl(url);
+        List<Comment> comments = commentRepository.findAllByPostPageUrl(url);
         // 2. 댓글을 작성한 User 정보
         for (Comment comment : comments) {
             User user = comment.getUser();
-            commentResponses.add(CommentResponse.of(comment,user,user.getProfile()));
+            commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
         }
 
         return commentResponses;
