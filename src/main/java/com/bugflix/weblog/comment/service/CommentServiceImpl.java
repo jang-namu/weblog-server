@@ -95,10 +95,23 @@ public class CommentServiceImpl {
         }
     }
 
-    public List<CommentResponse> getComment(String url) {
+    public List<CommentResponse> getCommentsByUrl(String url) {
         List<CommentResponse> commentResponses = new ArrayList<>();
         // 1. 댓글 검색
         List<Comment> comments = commentRepository.findAllByPostPageUrl(url);
+        // 2. 댓글을 작성한 User 정보
+        for (Comment comment : comments) {
+            User user = comment.getUser();
+            commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
+        }
+
+        return commentResponses;
+    }
+
+    public List<CommentResponse> getCommentsByPostId(Long postId) {
+        List<CommentResponse> commentResponses = new ArrayList<>();
+        // 1. 댓글 검색
+        List<Comment> comments = commentRepository.findAllByPostPostId(postId);
         // 2. 댓글을 작성한 User 정보
         for (Comment comment : comments) {
             User user = comment.getUser();

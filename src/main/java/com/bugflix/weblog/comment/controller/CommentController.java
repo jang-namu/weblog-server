@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,9 +48,15 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "댓글 조회", description = "")
+    @Operation(summary = "댓글 조회(URL)", description = "URL에 작성된 댓글 조회 ")
     @GetMapping("/v1/comments")
-    public ResponseEntity<List<CommentResponse>> getComments(@RequestParam String pageUrl) {
-        return ResponseEntity.ok(commentService.getComment(pageUrl));
+    public ResponseEntity<List<CommentResponse>> getCommentsByUrl(@RequestParam String pageUrl) {
+        return ResponseEntity.ok(commentService.getCommentsByUrl(pageUrl));
+    }
+
+    @Operation(summary = "댓글 조회(postId)", description = "포스트에 달린 댓글 조회 ")
+    @GetMapping("/v1/comments/{postId}")
+    public List<CommentResponse> getCommentsByPostId(@PathVariable Long postId) {
+        return commentService.getCommentsByPostId(postId);
     }
 }
