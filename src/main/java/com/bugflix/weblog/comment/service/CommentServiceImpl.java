@@ -70,9 +70,10 @@ public class CommentServiceImpl {
          todo: 2.Transactional 어노테이션을 사용하지 않아도 comment.getUser()가 가능한가?
           => ManyToOne 연관관계로 기본 Fetch 전략이 EAGER
          */
-        if (comment.getUser() == user) {
+        if (comment.getUser().getUserId() == user.getUserId()) {
             // 3. Comment 의 내용 update
             comment.updateContent(content);
+            commentRepository.save(comment);
         } else {
             throw new IllegalArgumentException("Only writer can update");
         }
@@ -87,7 +88,7 @@ public class CommentServiceImpl {
                 .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
 
         // 3. user 정보와 comment 의 소유자가 동일한지 확인
-        if (comment.getUser() == user) {
+        if (comment.getUser().getUserId() == user.getUserId()) {
             commentRepository.delete(comment);
         } else {
             throw new IllegalArgumentException("Only writer can delete");
