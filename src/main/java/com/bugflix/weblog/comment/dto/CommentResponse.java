@@ -20,7 +20,9 @@ public class CommentResponse {
 
     private CommentResponse(Comment comment, User user, Profile profile){
         commentId = comment.getCommentId();
-        parentId = comment.getParentComment().getCommentId();
+        if (comment.getParentComment() != null) {
+            parentId = comment.getParentComment().getCommentId();
+        }
         userId = user.getUserId();
         nickname = user.getNickname();
         profileImageUrl = profile.getImageUrl();
