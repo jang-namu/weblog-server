@@ -18,7 +18,7 @@ public class TagServiceImpl {
 
     public List<String> findTagsByPostId(Long postId) {
         List<Tag> tags = tagRepository.findTagsByPostPostId(postId);
-        ArrayList<String> tagContents = new ArrayList<>();
+        List<String> tagContents = new ArrayList<>();
 
         tags.forEach(tag -> {
             tagContents.add(tag.getTagContent());
