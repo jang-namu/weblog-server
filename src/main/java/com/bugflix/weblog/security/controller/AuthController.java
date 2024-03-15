@@ -6,6 +6,7 @@ import com.bugflix.weblog.user.dto.SignInRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class AuthController {
 //    @CommonResponses
     @Operation(summary = "로그인", description = "로그인 성공 시 액세스 토큰 및 리프레쉬 토큰을 발급합니다.")
     @PostMapping(value = "/v1/auths/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok().body(authService.login(signInRequest));
     }
 
@@ -29,7 +30,7 @@ public class AuthController {
     @PostMapping(value = "/v1/auths/reissue")
     public ResponseEntity<TokenResponse> refreshToken(
             HttpServletRequest httpServletRequest,
-            @RequestBody SignInRequest signInRequest) throws Exception {
+            @Valid @RequestBody SignInRequest signInRequest) throws Exception {
         return ResponseEntity.ok().body(
                 TokenResponse.builder()
                         .accessToken(authService.refresh(httpServletRequest, signInRequest))

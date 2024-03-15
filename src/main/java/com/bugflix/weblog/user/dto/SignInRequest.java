@@ -1,6 +1,9 @@
 package com.bugflix.weblog.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,11 +15,11 @@ import lombok.NoArgsConstructor;
 public class SignInRequest {
 
     @Schema(description = "이메일(로그인 ID)", example="bugflix19@example.com")
-    @NotNull
+    @Email @NotEmpty // Email은 공백("")을 허용합니다.
     private String email;
 
     @Schema(description = "비밀번호", example="test1234!")
-    @NotNull
+    @NotBlank
     private String password;
 
 }

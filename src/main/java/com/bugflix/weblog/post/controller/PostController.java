@@ -189,12 +189,12 @@ public class PostController {
     }
 
     @GetMapping("/v1/posts/ranks")
-    public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@ModelAttribute PostPopularRequest postPopularRequest) {
+    public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@Valid @ModelAttribute PostPopularRequest postPopularRequest) {
         return ResponseEntity.ok(postServiceImpl.getPopularPosts(postPopularRequest));
     }
 
     @GetMapping("/v1/search/posts")
-    public ResponseEntity<List<PostSearchResponse>> searchPost(@ModelAttribute PostSearchRequest postSearchRequest) {
+    public ResponseEntity<List<PostSearchResponse>> searchPost(@Valid @ModelAttribute PostSearchRequest postSearchRequest) {
         return ResponseEntity.ok(postServiceImpl.searchPost(postSearchRequest));
     }
 }

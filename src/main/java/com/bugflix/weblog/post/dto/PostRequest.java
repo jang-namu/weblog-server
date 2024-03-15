@@ -23,7 +23,6 @@ public class PostRequest {
 
     @Schema(description = "원문 스크랩", example = "일기는 하루를 마무리하는 좋은 습관이에요. " +
             "우리 다 같이 일기를 써보는 건 어떨까요?")
-    @NotNull
     private String memo;
 
     @Schema(description = "태그", example = "[\"일기\", \"갓생\"]")

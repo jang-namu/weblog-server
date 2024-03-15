@@ -1,6 +1,9 @@
 package com.bugflix.weblog.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,11 +18,11 @@ import java.time.LocalDate;
 public class SignUpRequest {
 
     @Schema(description = "이메일(로그인 ID)", example="bugflix19@example.com")
-    @NotNull
+    @Email @NotEmpty
     private String email;
 
     @Schema(description = "비밀번호", example="test1234!")
-    @NotNull
+    @NotBlank
     private String password;
 
     @Schema(description = "별명", example="namu")
