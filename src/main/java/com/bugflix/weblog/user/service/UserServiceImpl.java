@@ -42,7 +42,6 @@ public class UserServiceImpl {
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() ->
                 new Exception("계정을 찾을 수 없습니다."));
 
-        // 비밀번호 검증 로직 필요
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
             throw new Exception();
         }
