@@ -1,5 +1,6 @@
 package com.bugflix.weblog.user.domain;
 
+import com.bugflix.weblog.comment.domain.Comment;
 import com.bugflix.weblog.common.BaseTimeEntity;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.profile.domain.Profile;
@@ -38,7 +39,10 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @Builder

@@ -1,5 +1,6 @@
 package com.bugflix.weblog.post.domain;
 
+import com.bugflix.weblog.comment.domain.Comment;
 import com.bugflix.weblog.common.BaseTimeEntity;
 import com.bugflix.weblog.post.dto.PostRequest;
 import com.bugflix.weblog.tag.domain.Tag;
@@ -41,8 +42,11 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "page_id", nullable = false)
     private Page page;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
     @Column(name = "like_count")
     private Long likeCount = 0L;

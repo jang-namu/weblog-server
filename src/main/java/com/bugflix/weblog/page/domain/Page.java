@@ -21,7 +21,7 @@ public class Page {
     @Getter
     private String url;
 
-    @OneToMany(mappedBy = "page")
+    @OneToMany(mappedBy = "page", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     public Page(String url) {
