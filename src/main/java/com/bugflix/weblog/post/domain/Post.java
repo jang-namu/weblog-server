@@ -55,7 +55,7 @@ public class Post extends BaseTimeEntity {
         title = postRequest.getTitle();
         content = postRequest.getContent();
         memo = postRequest.getMemo();
-        imageUrl = postRequest.getUrl();
+        imageUrl = postRequest.getImageUrl();
     }
 
     public Post(PostRequest postRequest, User user, Page page) {
