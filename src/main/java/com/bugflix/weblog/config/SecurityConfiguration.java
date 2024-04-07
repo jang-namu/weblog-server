@@ -60,7 +60,7 @@ public class SecurityConfiguration {
                 })
                 // Spring Security 세션 정책 : 세션을 생성 및 사용하지 않음
                 .sessionManagement(configurer ->
-                    configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
                     authorize
                             .requestMatchers(HttpMethod.POST, "/api/v1/posts").hasRole("USER")
@@ -77,6 +77,12 @@ public class SecurityConfiguration {
                             .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
                             .anyRequest().hasRole("USER");
                 })
+
+                .oauth2Login(oauth -> oauth
+                                .loginPage("/oauth2/authorization/google")
+
+                )
+
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
 
                 .exceptionHandling(e -> e
