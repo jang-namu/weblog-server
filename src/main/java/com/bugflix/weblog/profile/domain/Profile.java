@@ -40,6 +40,16 @@ public class Profile extends BaseTimeEntity {
         this.birthDate = birthDate;
     }
 
+    public Profile(String phoneNumber, LocalDate birthDate, String imageUrl) {
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.imageUrl = imageUrl;
+    }
+
+    public void changeProfileImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public void assignUser(User user) {
         this.user = user;
     }
