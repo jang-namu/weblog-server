@@ -1,6 +1,8 @@
-package com.bugflix.weblog.security.controller;
+package com.bugflix.weblog.security.oauth.controller;
 
 import com.bugflix.weblog.security.dto.TokenResponse;
+import com.bugflix.weblog.security.oauth.common.OAuthProvider;
+import com.bugflix.weblog.security.oauth.service.OAuthService;
 import com.bugflix.weblog.security.service.AuthServiceImpl;
 import com.bugflix.weblog.user.dto.SignInRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthServiceImpl authService;
+    private final OAuthService oAuthService;
 
-//    @CommonResponses
     @Operation(summary = "로그인", description = "로그인 성공 시 액세스 토큰 및 리프레쉬 토큰을 발급합니다.")
     @PostMapping(value = "/v1/auths/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody SignInRequest signInRequest) {
@@ -43,4 +45,10 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "OAuth 2.0 회원가입/로그인", description = "소셜 로그인, AuthorizationCode를 받아 회원가입/로그인 수행")
+    @GetMapping("/login/oauth2/code/{oAuthProvider}")
+    public ResponseEntity<TokenResponse> oAuthLogin(@PathVariable OAuthProvider oAuthProvider,
+                                                    @RequestParam String code) {
+        return ResponseEntity.ok().body(oAuthService.login(oAuthProvider, code));
+    }
 }
