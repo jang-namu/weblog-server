@@ -20,6 +20,12 @@ public class UserController {
 
     private final UserServiceImpl userService;
 
+    /***
+     * 신규 사용자 정보를 등록합니다.
+     *
+     * @param signUpRequest 신규 등록을 요청한 사용자의 정보;
+     * @return
+     */
     @Operation(summary = "회원가입", description = "신규 사용자 정보를 등록합니다.")
     @PostMapping("/v1/users")
     public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {

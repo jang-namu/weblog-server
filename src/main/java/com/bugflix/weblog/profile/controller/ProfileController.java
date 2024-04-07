@@ -21,6 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileController {
     private final ProfileServiceImpl profileService;
 
+    /***
+     * 현재 사용자의 Profile을 조회합니다.
+     *
+     * @param userDetails Profile 조회를 요청한 user에 대한 정보;
+     *                    조회를 요청한 user를 식별하고 Profile을 조회할 권한이 있는지 확인하기 위해 필요합니다.
+     * @return 현재 사용자의 Profile을 반환합니다.
+     * Todo @throws Exception
+     */
     @GetMapping("/v1/profiles/mine")
     @Operation(summary = "Profile 조회", description = "사용자 본인 Profile을 조회합니다.")
     public ResponseEntity<ProfileResponse> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
