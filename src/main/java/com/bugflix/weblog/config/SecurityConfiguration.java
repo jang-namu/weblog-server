@@ -46,6 +46,7 @@ public class SecurityConfiguration {
             "/api/v1/users",
             "/api/v1/auths/login",
             "/api/v1/auths/reissue",
+            "/api/login/oauth2/code/**",
             "/api/v1/healthcheck"
     };
 
@@ -84,7 +85,6 @@ public class SecurityConfiguration {
                 )
 
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-
                 .exceptionHandling(e -> e
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
