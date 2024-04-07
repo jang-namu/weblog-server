@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,8 +25,7 @@ public class OAuthService {
     public TokenResponse login(OAuthProvider oAuthProvider, String authCode) {
 
         User oauthMember = oAuthRepositoryComposite.fetch(oAuthProvider, authCode);
-        User saved = userRepository.findByEmail(oauthMember.getEmail())
-                .orElseGet(() -> userRepository.save(oauthMember));
+        User saved = saveOrUpdate(oauthMember);
 
         String accessToken = jwtProvider.createAccessToken(saved.getEmail(), saved.getRoles());
         String refreshToken = jwtProvider.createRefreshToken(saved.getEmail(), saved.getRoles());
@@ -36,5 +37,13 @@ public class OAuthService {
                 .nickname(saved.getNickname())
                 .email(saved.getEmail())
                 .build();
+    }
+
+    private User saveOrUpdate(User oauthMember) {
+        Optional<User> user = userRepository.findByEmail(oauthMember.getEmail());
+        if (user.isEmpty()) {
+            return userRepository.save(oauthMember);
+        }
+        return user.get().update(oauthMember.getNickname(), oauthMember.getProfile().getImageUrl());
     }
 }

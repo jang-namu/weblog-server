@@ -46,7 +46,7 @@ public class User extends BaseTimeEntity {
     private List<Post> posts = new ArrayList<>();
 
     @Builder
-    public User(String email, String password, String nickname) {
+    public User(String email, String password, String nickname, Profile profile, List<Authority> roles) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
@@ -57,6 +57,12 @@ public class User extends BaseTimeEntity {
             authority.assignUser(this);
             return authority;
         }).collect(Collectors.toList());
+    }
+
+    public User update(String nickname, String picture) {
+        this.nickname = nickname;
+        this.profile.changeProfileImage(picture);
+        return this;
     }
 
     public void assignProfile(Profile profile) {
