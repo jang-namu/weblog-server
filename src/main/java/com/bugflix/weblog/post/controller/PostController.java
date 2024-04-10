@@ -44,7 +44,7 @@ public class PostController {
      * - 2. weblog page 에서 저장 요청
      */
     @PostMapping("/v1/posts")
-    @Operation(summary = "Post 저장",description = "사용자가 작성한 Post를 저장합니다.")
+    @Operation(summary = "Post 저장", description = "사용자가 작성한 Post를 저장합니다.")
     public ResponseEntity<Void> savePost(@Valid @RequestBody PostRequest postRequest,
                                          @AuthenticationPrincipal UserDetails userDetails) {
         postServiceImpl.savePost(postRequest, userDetails);
@@ -165,7 +165,7 @@ public class PostController {
         List<PostPreviewResponse> postPreviewResponses;
 
         if (url == null) postPreviewResponses = postServiceImpl.getMyPostPreview(userDetails);
-        else postPreviewResponses = postServiceImpl.getMyPostPreview(url,userDetails);
+        else postPreviewResponses = postServiceImpl.getMyPostPreview(url, userDetails);
 
         return ResponseEntity.ok(postPreviewResponses);
     }
@@ -181,10 +181,10 @@ public class PostController {
      * - postId 로 Post 삭제
      */
     @DeleteMapping("/v1/posts/{postId}")
-    @Operation(summary = "Post 삭제",description = "사용자가 자신의 Post를 삭제합니다.")
-    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-
-        postServiceImpl.deletePost(postId);
+    @Operation(summary = "Post 삭제", description = "사용자가 자신의 Post를 삭제합니다.")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+                                           @AuthenticationPrincipal UserDetails userDetails) {
+        postServiceImpl.deletePost(postId, userDetails);
         return ResponseEntity.ok().build();
     }
 

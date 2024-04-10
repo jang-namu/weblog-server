@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -286,10 +283,19 @@ public class PostServiceImpl {
      * - 존재하면 delete
      * - 존재하지 않으면 IllegalArgumentException 예외 처리 ( Invalid postId )
      */
-    public void deletePost(Long postId) throws IllegalArgumentException {
+    public void deletePost(Long postId, UserDetails userDetails) throws IllegalArgumentException {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
         // Todo Global Exception Handler 생성
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid Post Id"));
+        validateIsOwnedPost(post, userId);
+
         postRepository.delete(post);
+    }
+
+    private void validateIsOwnedPost(Post post, Long userId) {
+        if (!Objects.equals(userId, post.getUser().getUserId())) {
+            throw new RuntimeException("소유하지 않은 Post입니다.");
+        }
     }
 
     public List<PostPreviewResponse> getPopularPosts(PostPopularRequest postPopularRequest) {
@@ -301,10 +307,10 @@ public class PostServiceImpl {
                 criterion,
                 // todo: offset -> 0, 1, 2순으로 클라이언트 코드 수정 or API 서버에서 공통처리하는 로직 작성
                 PageRequest.of(postPopularRequest.getOffset() / postPopularRequest.getLimit(),
-                postPopularRequest.getLimit()));
+                        postPopularRequest.getLimit()));
 
         // todo stream으로 개선
-        for(Post post : postList) {
+        for (Post post : postList) {
             Long postId = post.getPostId();
 
             PostPreviewResponse postPreview = new PostPreviewResponse(
