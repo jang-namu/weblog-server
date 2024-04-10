@@ -9,7 +9,7 @@ import java.util.Optional;
 public class SecurityUtil {
 
     private SecurityUtil() {
-        throw new IllegalStateException("SecurityUtil의 생성자가 호출됐습니다.");
+        throw new AssertionError("SecurityUtil은 인스턴스화 할 수 없습니다.");
     }
 
     public static Optional<String> getCurrentUsername() {
