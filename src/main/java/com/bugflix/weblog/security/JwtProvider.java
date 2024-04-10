@@ -1,6 +1,8 @@
 package com.bugflix.weblog.security;
 
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.InvalidTokenException;
 import com.bugflix.weblog.security.domain.RefreshToken;
 import com.bugflix.weblog.security.repository.RefreshTokenRepository;
 import com.bugflix.weblog.security.service.CustomUserDetailServiceImpl;
@@ -107,7 +109,7 @@ public class JwtProvider {
         String token = request.getHeader("Authorization");
         try {
             if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("Bearer ")) {
-                throw new IllegalStateException("Token 정보가 존재하지 않음");
+                throw new InvalidTokenException(Errors.INVALID_TOKEN);
             }
             token = token.split(" ")[1].trim();
         } catch (Exception e) {
