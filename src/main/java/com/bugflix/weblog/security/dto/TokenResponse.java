@@ -24,7 +24,7 @@ public class TokenResponse {
     private String email;
 
     @Builder
-    public TokenResponse(String accessToken, String refreshToken, Long userId, String nickname, String email) {
+    private TokenResponse(String accessToken, String refreshToken, Long userId, String nickname, String email) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.userId = userId;
