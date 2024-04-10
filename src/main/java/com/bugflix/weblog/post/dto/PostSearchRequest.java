@@ -13,9 +13,11 @@ public class PostSearchRequest {
     private String query;
     @NotNull
     private SearchType type;
-    @NotNull @PositiveOrZero
+    @NotNull
+    @PositiveOrZero
     private Integer offset;
-    @NotNull @Positive
+    @NotNull
+    @Positive
     private Integer limit;
 
     private PostSearchRequest(String query, SearchType type, Integer offset, Integer limit) {

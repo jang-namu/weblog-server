@@ -14,10 +14,12 @@ public class PostPopularRequest {
     @NotNull
     private Period type;
 
-    @NotNull @PositiveOrZero
+    @NotNull
+    @PositiveOrZero
     private Integer offset;
 
-    @NotNull @Positive
+    @NotNull
+    @Positive
     private Integer limit;
 }
 

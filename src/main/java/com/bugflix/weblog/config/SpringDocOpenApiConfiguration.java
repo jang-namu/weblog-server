@@ -36,9 +36,9 @@ public class SpringDocOpenApiConfiguration {
 
     private Info info() {
         return new Info()
-                .title("weblog 프로젝트 API Document")
+                .title("Scrabler 프로젝트 API Document")
                 .version("v0.0.1")
-                .description("weblog 프로젝트의 API 명세서입니다.");
+                .description("Scrabler 프로젝트의 API 명세서입니다.");
     }
 
 }

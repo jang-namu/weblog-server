@@ -18,7 +18,7 @@ public class CommentResponse {
     private String profileImageUrl;
     private String content;
 
-    private CommentResponse(Comment comment, User user, Profile profile){
+    private CommentResponse(Comment comment, User user, Profile profile) {
         commentId = comment.getCommentId();
         if (comment.getParentComment() != null) {
             parentId = comment.getParentComment().getCommentId();
@@ -30,6 +30,6 @@ public class CommentResponse {
     }
 
     public static CommentResponse of(Comment comment, User user, Profile profile) {
-        return new CommentResponse(comment,user,profile);
+        return new CommentResponse(comment, user, profile);
     }
 }

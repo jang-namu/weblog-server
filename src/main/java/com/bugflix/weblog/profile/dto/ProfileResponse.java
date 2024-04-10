@@ -13,7 +13,6 @@ public class ProfileResponse {
     private ProfileResponse(User user, Profile profile) {
         nickname = user.getNickname();
         email = user.getEmail();
-
         if (profile.getImageUrl() != null) {
             this.imageUrl = profile.getImageUrl();
         }
