@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,32 +36,32 @@ public class CommentServiceImpl {
      * - 실패 : Exception 반환
      */
     public void saveComment(CommentRequest commentRequest, UserDetails userDetails) {
-        // 1. User 객체 검색
         User user = ((CustomUserDetails) userDetails).getUser();
-
-        // 2. Post 객체 검색
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("invalid postId"));
 
-        // 3. Comment 객체 생성
         Comment comment;
         if (commentRequest.getParentCommentId() != null) {
             Comment parentComment = commentRepository.findById(commentRequest.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("parentComment를 찾을 수 없습니다."));
+            valdiateIsOnSamePost(post, parentComment);
             comment = Comment.of(commentRequest.getContent(), user, post, parentComment);
         } else {
             comment = Comment.of(commentRequest.getContent(), user, post);
         }
 
-        // 4. Comment 저장
         commentRepository.save(comment);
     }
 
+    private void valdiateIsOnSamePost(Post post, Comment parentComment) {
+        if (!Objects.equals(post.getPostId(), parentComment.getPost().getPostId())) {
+            throw new RuntimeException("대댓글은 댓글과 같은 포스트 상에 존재해야 합니다.");
+        }
+    }
+
     public void updateComment(Long commentId, String content, UserDetails userDetails) {
-        // 1. User 객체 검색
         User user = ((CustomUserDetails) userDetails).getUser();
 
-        // 2. commentId로 Comment 검색
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
 
@@ -71,7 +72,6 @@ public class CommentServiceImpl {
           => ManyToOne 연관관계로 기본 Fetch 전략이 EAGER
          */
         if (comment.getUser().getUserId() == user.getUserId()) {
-            // 3. Comment 의 내용 update
             comment.updateContent(content);
             commentRepository.save(comment);
         } else {
@@ -80,15 +80,12 @@ public class CommentServiceImpl {
     }
 
     public void deleteComment(Long commentId, UserDetails userDetails) {
-        // 1. userDetail 에서 user 정보 받아오기
         User user = ((CustomUserDetails) userDetails).getUser();
 
-        // 2. commentId로 Comment 검색
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
 
-        // 3. user 정보와 comment 의 소유자가 동일한지 확인
-        if (comment.getUser().getUserId() == user.getUserId()) {
+        if (Objects.equals(user.getUserId(), comment.getUser().getUserId())) {
             commentRepository.delete(comment);
         } else {
             throw new IllegalArgumentException("Only writer can delete");
@@ -97,9 +94,7 @@ public class CommentServiceImpl {
 
     public List<CommentResponse> getCommentsByUrl(String url) {
         List<CommentResponse> commentResponses = new ArrayList<>();
-        // 1. 댓글 검색
         List<Comment> comments = commentRepository.findAllByPostPageUrl(url);
-        // 2. 댓글을 작성한 User 정보
         for (Comment comment : comments) {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
@@ -110,9 +105,7 @@ public class CommentServiceImpl {
 
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         List<CommentResponse> commentResponses = new ArrayList<>();
-        // 1. 댓글 검색
         List<Comment> comments = commentRepository.findAllByPostPostId(postId);
-        // 2. 댓글을 작성한 User 정보
         for (Comment comment : comments) {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
