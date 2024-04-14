@@ -57,4 +57,12 @@ public class CanvasService {
         return canvases.stream()
                 .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
     }
+
+    public List<CanvasResponse> getMyCanvases(Integer offset, Integer limit, UserDetails userDetails) {
+        User user = ((CustomUserDetails) userDetails).getUser();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "canvasId");
+        Page<Canvas> canvases = canvasRepository.findAllByUser(user, PageRequest.of(offset, limit, strategy));
+        return canvases.stream()
+                .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
+    }
 }

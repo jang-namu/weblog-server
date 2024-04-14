@@ -47,9 +47,9 @@ public class CanvasController {
     }
 
     @GetMapping("/v1/canvases/mine")
-    public ResponseEntity<List<CanvasResponse>> getMyCanvases(@RequestParam Long offset, @RequestParam Long limit,
+    public ResponseEntity<List<CanvasResponse>> getMyCanvases(@RequestParam Integer offset, @RequestParam Integer limit,
                                                         @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok().body(canvasService.getMyCanvases(offset, limit, userDetails));
     }
 
     @GetMapping("/v1/search/canvases")
