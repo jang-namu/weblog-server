@@ -1,6 +1,7 @@
 package com.bugflix.weblog.follow.controller;
 
 import com.bugflix.weblog.follow.dto.FollowRequest;
+import com.bugflix.weblog.follow.dto.FollowResponse;
 import com.bugflix.weblog.follow.service.FollowServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,5 +49,19 @@ public class FollowController {
         followService.deleteFollow(followRequest,userDetails,false);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/v1/follows/following")
+    @Operation(summary = "following 조회", description = "현재 사용자가 following 중인 사용자 목록을 조회합니다.")
+    public ResponseEntity<List<FollowResponse>> searchFollower(@AuthenticationPrincipal UserDetails userDetails){
+
+        return ResponseEntity.ok(followService.searchFollow(userDetails,false));
+    }
+
+    @GetMapping("/v1/follows/follower")
+    @Operation(summary = "follower 조회", description = "현재 사용자를 follow하는 follower 목록을 조회합니다.")
+    public ResponseEntity<List<FollowResponse>> searchFollowing(@AuthenticationPrincipal UserDetails userDetails) {
+
+        return ResponseEntity.ok(followService.searchFollow(userDetails,true));
     }
 }

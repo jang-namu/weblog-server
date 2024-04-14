@@ -2,6 +2,7 @@ package com.bugflix.weblog.follow.service;
 
 import com.bugflix.weblog.follow.domain.Follow;
 import com.bugflix.weblog.follow.dto.FollowRequest;
+import com.bugflix.weblog.follow.dto.FollowResponse;
 import com.bugflix.weblog.follow.repository.FollowRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +40,28 @@ public class FollowServiceImpl {
         Pair<User,User> users = searchUser(followRequest,userDetails,isFollower);
 
         followRepository.deleteByFollowerAndFollowing(users.getFirst(),users.getSecond());
+    }
+
+    public List<FollowResponse> searchFollow(UserDetails userDetails, boolean isFollower){
+        User user = ((CustomUserDetails) userDetails).getUser();
+        List<Follow> follows;
+        ArrayList<FollowResponse> followResponses = new ArrayList<>();
+
+        if (isFollower) {
+            follows = followRepository.findByFollowing(user);
+            follows.forEach(follow -> {
+                User follower = follow.getFollower();
+                followResponses.add(FollowResponse.of(follower,follower.getProfile()));
+            });
+        } else {
+            follows = followRepository.findByFollower(user);
+            follows.forEach(follow -> {
+                User following = follow.getFollowing();
+                followResponses.add(FollowResponse.of(following,following.getProfile()));
+            });
+        }
+
+        return followResponses;
     }
 
 
