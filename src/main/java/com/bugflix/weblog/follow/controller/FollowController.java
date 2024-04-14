@@ -5,6 +5,7 @@ import com.bugflix.weblog.follow.dto.FollowResponse;
 import com.bugflix.weblog.follow.service.FollowServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,15 +34,6 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/v1/follows/following")
-    @Operation(summary = "following 삭제", description = "following 중인 사용자를 목록에서 삭제")
-    public ResponseEntity<Void> deleteFollowing(@Valid @RequestBody FollowRequest followRequest,
-                                                @AuthenticationPrincipal UserDetails userDetails) {
-        followService.deleteFollow(followRequest,userDetails,true);
-
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/v1/follows/following")
     @Operation(summary = "following 조회", description = "현재 사용자가 following 중인 사용자 목록을 조회합니다.")
     public ResponseEntity<List<FollowResponse>> searchFollower(@AuthenticationPrincipal UserDetails userDetails){
@@ -56,6 +48,16 @@ public class FollowController {
         return ResponseEntity.ok(followService.searchFollow(userDetails,true));
     }
 
+    @DeleteMapping("/v1/follows/following")
+    @Operation(summary = "following 삭제", description = "following 중인 사용자를 목록에서 삭제")
+    public ResponseEntity<Void> deleteFollowing(@Valid @RequestBody FollowRequest followRequest,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+        followService.deleteFollow(followRequest,userDetails,true);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @DeleteMapping("/v1/follows/follower")
     @Operation(summary = "follower 삭제", description = "사용자를 following하는 follower를 목록에서 삭제")
     public ResponseEntity<Void> deleteFollower(@Valid @RequestBody FollowRequest followRequest,
@@ -64,6 +66,4 @@ public class FollowController {
 
         return ResponseEntity.ok().build();
     }
-
-
 }

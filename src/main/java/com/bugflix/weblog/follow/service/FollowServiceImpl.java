@@ -8,6 +8,7 @@ import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.repository.UserRepository;
 import com.mysema.commons.lang.Pair;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class FollowServiceImpl {
         return followResponses;
     }
 
-
+    @Transactional
     public void deleteFollow(FollowRequest followRequest, UserDetails userDetails, boolean isFollower) {
         Pair<User,User> users = searchUser(followRequest,userDetails,isFollower);
 
