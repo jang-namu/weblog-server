@@ -1,7 +1,7 @@
 package com.bugflix.weblog.security.oauth.client;
 
 import com.bugflix.weblog.common.Errors;
-import com.bugflix.weblog.common.exception.FailedFetchResourcetException;
+import com.bugflix.weblog.common.exception.FailedFetchResourceException;
 import com.bugflix.weblog.common.exception.FailedTokenExchangeException;
 import com.bugflix.weblog.security.oauth.common.config.GoogleOAuthConfiguration;
 import com.bugflix.weblog.security.oauth.dto.response.GoogleOAuthMemberResponse;
@@ -49,7 +49,7 @@ public class GoogleOAuthClient implements OAuthClient {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity.getBody();
         }
-        throw new FailedFetchResourcetException(Errors.FETCH_SOCIAL_RESOURCE);
+        throw new FailedFetchResourceException(Errors.FETCH_SOCIAL_RESOURCE);
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
