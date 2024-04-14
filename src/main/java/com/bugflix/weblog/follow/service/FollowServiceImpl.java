@@ -1,0 +1,65 @@
+package com.bugflix.weblog.follow.service;
+
+import com.bugflix.weblog.follow.domain.Follow;
+import com.bugflix.weblog.follow.dto.FollowRequest;
+import com.bugflix.weblog.follow.repository.FollowRepository;
+import com.bugflix.weblog.security.domain.CustomUserDetails;
+import com.bugflix.weblog.user.domain.User;
+import com.bugflix.weblog.user.repository.UserRepository;
+import com.mysema.commons.lang.Pair;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class FollowServiceImpl {
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository;
+
+
+    public void addFollow(FollowRequest followRequest, UserDetails userDetails) {
+        Pair<User,User> users = searchUser(followRequest,userDetails,true);
+
+        Follow follow = Follow
+                .builder()
+                .follower(users.getFirst())
+                .following(users.getSecond())
+                .build();
+
+        followRepository.save(follow);
+    }
+
+
+    public void deleteFollow(FollowRequest followRequest, UserDetails userDetails, boolean isFollower) {
+        Pair<User,User> users = searchUser(followRequest,userDetails,isFollower);
+
+        followRepository.deleteByFollowerAndFollowing(users.getFirst(),users.getSecond());
+    }
+
+
+    /***
+     * User 객체 반환
+     *
+     * @param followRequest 검색을 요청하는 nickname
+     * @param userDetails Login한 사용자 정보
+     * @param isFollower Login한 사용자의 follower 여부
+     * @return first : follower<br>
+     *         second : following
+     */
+    private Pair<User,User> searchUser(FollowRequest followRequest, UserDetails userDetails, boolean isFollower) {
+        User follower,following;
+        if (isFollower){
+            follower = ((CustomUserDetails) userDetails).getUser();;
+            following = userRepository.findByNickname(followRequest.getNickname()).orElseThrow(() -> new IllegalArgumentException("invalid nickname"));
+        } else {
+            follower = userRepository.findByNickname(followRequest.getNickname()).orElseThrow(() -> new IllegalArgumentException("invalid nickname"));
+            following = ((CustomUserDetails) userDetails).getUser();;
+        }
+        return new Pair<>(follower,following);
+    }
+
+}
