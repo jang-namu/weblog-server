@@ -35,13 +35,6 @@ public class FollowServiceImpl {
         followRepository.save(follow);
     }
 
-
-    public void deleteFollow(FollowRequest followRequest, UserDetails userDetails, boolean isFollower) {
-        Pair<User,User> users = searchUser(followRequest,userDetails,isFollower);
-
-        followRepository.deleteByFollowerAndFollowing(users.getFirst(),users.getSecond());
-    }
-
     public List<FollowResponse> searchFollow(UserDetails userDetails, boolean isFollower){
         User user = ((CustomUserDetails) userDetails).getUser();
         List<Follow> follows;
@@ -62,6 +55,13 @@ public class FollowServiceImpl {
         }
 
         return followResponses;
+    }
+
+
+    public void deleteFollow(FollowRequest followRequest, UserDetails userDetails, boolean isFollower) {
+        Pair<User,User> users = searchUser(followRequest,userDetails,isFollower);
+
+        followRepository.deleteByFollowerAndFollowing(users.getFirst(),users.getSecond());
     }
 
 

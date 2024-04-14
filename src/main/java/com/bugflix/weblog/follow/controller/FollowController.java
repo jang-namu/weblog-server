@@ -42,15 +42,6 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/v1/follows/follower")
-    @Operation(summary = "follower 삭제", description = "사용자를 following하는 follower를 목록에서 삭제")
-    public ResponseEntity<Void> deleteFollower(@Valid @RequestBody FollowRequest followRequest,
-                                               @AuthenticationPrincipal UserDetails userDetails){
-        followService.deleteFollow(followRequest,userDetails,false);
-
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/v1/follows/following")
     @Operation(summary = "following 조회", description = "현재 사용자가 following 중인 사용자 목록을 조회합니다.")
     public ResponseEntity<List<FollowResponse>> searchFollower(@AuthenticationPrincipal UserDetails userDetails){
@@ -64,4 +55,15 @@ public class FollowController {
 
         return ResponseEntity.ok(followService.searchFollow(userDetails,true));
     }
+
+    @DeleteMapping("/v1/follows/follower")
+    @Operation(summary = "follower 삭제", description = "사용자를 following하는 follower를 목록에서 삭제")
+    public ResponseEntity<Void> deleteFollower(@Valid @RequestBody FollowRequest followRequest,
+                                               @AuthenticationPrincipal UserDetails userDetails){
+        followService.deleteFollow(followRequest,userDetails,false);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 }
