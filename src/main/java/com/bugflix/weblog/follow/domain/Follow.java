@@ -18,11 +18,11 @@ public class Follow extends BaseTimeEntity {
     private Long followId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "follower_id")
     private User follower;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "following_id")
     private User following;
 
     @Builder
