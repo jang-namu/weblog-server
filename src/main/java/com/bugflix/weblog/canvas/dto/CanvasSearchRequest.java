@@ -1,6 +1,6 @@
 package com.bugflix.weblog.canvas.dto;
 
-import com.bugflix.weblog.post.domain.SearchType;
+import com.bugflix.weblog.canvas.domain.CanvasSearchType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CanvasSearchRequest {
     private String query;
-    private SearchType type;
+    private CanvasSearchType type;
     private Integer offset;
     private Integer limit;
 
-    public CanvasSearchRequest(String query, SearchType type, Integer offset, Integer limit) {
+    public CanvasSearchRequest(String query, CanvasSearchType type, Integer offset, Integer limit) {
         this.query = query;
         this.type = type;
         this.offset = offset;

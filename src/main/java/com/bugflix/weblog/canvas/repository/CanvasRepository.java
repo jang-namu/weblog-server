@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CanvasRepository extends JpaRepository<Canvas, Long> {
     Page<Canvas> findAllByUser(User user, Pageable pageable);
-
+    Page<Canvas> findAllByTitleContains(String title , Pageable pageable);
+    Page<Canvas> findAllByUser_NicknameContains(String nickname, Pageable pageable);
 }

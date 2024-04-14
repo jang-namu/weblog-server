@@ -3,6 +3,7 @@ package com.bugflix.weblog.canvas.service;
 import com.bugflix.weblog.canvas.domain.Canvas;
 import com.bugflix.weblog.canvas.dto.CanvasRequest;
 import com.bugflix.weblog.canvas.dto.CanvasResponse;
+import com.bugflix.weblog.canvas.dto.CanvasSearchRequest;
 import com.bugflix.weblog.canvas.repository.CanvasRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
@@ -62,6 +63,28 @@ public class CanvasService {
         User user = ((CustomUserDetails) userDetails).getUser();
         Sort strategy = Sort.by(Sort.Direction.DESC, "canvasId");
         Page<Canvas> canvases = canvasRepository.findAllByUser(user, PageRequest.of(offset, limit, strategy));
+        return canvases.stream()
+                .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
+    }
+
+    public List<CanvasResponse> search(CanvasSearchRequest request) {
+        Sort strategy = Sort.by(Sort.Direction.DESC, "canvasId");
+        return switch (request.getType()) {
+            case TITLE -> searchByTitle(request, strategy);
+            case AUTHOR -> searchByAuthor(request, strategy);
+        };
+    }
+
+    private List<CanvasResponse> searchByTitle(CanvasSearchRequest request, Sort strategy) {
+        Page<Canvas> canvases = canvasRepository.findAllByTitleContains(request.getQuery(),
+                PageRequest.of(request.getOffset(), request.getLimit(), strategy));
+        return canvases.stream()
+                .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
+    }
+
+    private List<CanvasResponse> searchByAuthor(CanvasSearchRequest request, Sort strategy) {
+        Page<Canvas> canvases = canvasRepository.findAllByUser_NicknameContains(request.getQuery(),
+                PageRequest.of(request.getOffset(), request.getLimit(), strategy));
         return canvases.stream()
                 .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
     }

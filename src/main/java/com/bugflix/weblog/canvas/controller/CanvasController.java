@@ -53,7 +53,7 @@ public class CanvasController {
     }
 
     @GetMapping("/v1/search/canvases")
-    public ResponseEntity<CanvasResponse> searchCanvases(@ModelAttribute CanvasSearchRequest request) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<List<CanvasResponse>> searchCanvases(@ModelAttribute CanvasSearchRequest request) {
+        return ResponseEntity.ok().body(canvasService.search(request));
     }
 }
