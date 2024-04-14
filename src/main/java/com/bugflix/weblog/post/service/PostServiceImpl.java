@@ -320,11 +320,8 @@ public class PostServiceImpl {
 
         LocalDateTime criterion = LocalDateTime.now().minusDays(postPopularRequest.getType().getValue());
 
-        List<Post> postList = postRepository.findWithPagination(
-                criterion,
-                // todo: offset -> 0, 1, 2순으로 클라이언트 코드 수정 or API 서버에서 공통처리하는 로직 작성
-                PageRequest.of(postPopularRequest.getOffset() / postPopularRequest.getLimit(),
-                        postPopularRequest.getLimit()));
+        List<Post> postList = postRepository.findWithPagination(criterion,
+                PageRequest.of(postPopularRequest.getOffset(), postPopularRequest.getLimit()));
 
         // todo stream으로 개선
         for (Post post : postList) {
@@ -354,27 +351,23 @@ public class PostServiceImpl {
 
     private List<PostSearchResponse> searchByTag(PostSearchRequest postSearchRequest) {
         List<Post> posts = postRepository.findPostsByTagContent(postSearchRequest.getQuery(),
-                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
-                        postSearchRequest.getLimit()));
+                PageRequest.of(postSearchRequest.getOffset(), postSearchRequest.getLimit()));
         return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
                 e.getTags().stream().map(Tag::getTagContent).toList())).toList();
     }
 
     private List<PostSearchResponse> searchByContent(PostSearchRequest postSearchRequest) {
         List<Post> posts = postRepository.findPostsByTitleLike(postSearchRequest.getQuery(),
-                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
-                        postSearchRequest.getLimit()));
+                PageRequest.of(postSearchRequest.getOffset(), postSearchRequest.getLimit()));
         return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
                 e.getTags().stream().map(Tag::getTagContent).toList())).toList();
     }
 
     private List<PostSearchResponse> searchByTagAndContent(PostSearchRequest postSearchRequest) {
         List<Post> postsByTag = postRepository.findPostsByTagContent(postSearchRequest.getQuery(),
-                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
-                        postSearchRequest.getLimit()));
+                PageRequest.of(postSearchRequest.getOffset(), postSearchRequest.getLimit()));
         List<Post> postsByContent = postRepository.findPostsByTitleLike(postSearchRequest.getQuery(),
-                PageRequest.of(postSearchRequest.getOffset() / postSearchRequest.getLimit(),
-                        postSearchRequest.getLimit()));
+                PageRequest.of(postSearchRequest.getOffset(), postSearchRequest.getLimit()));
 
         Set<Post> posts = Stream.concat(postsByTag.stream(), postsByContent.stream()).collect(Collectors.toSet());
         return posts.stream().map(e -> PostSearchResponse.of(e, e.getUser().getNickname(),
