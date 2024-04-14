@@ -26,22 +26,13 @@ import java.util.List;
 public class PostController {
     private final PostServiceImpl postServiceImpl;
 
-    /**
-     * Name : savePost
-     * Parameter :
-     * - PostRequest postRequest : Frontend 의 저장 요청 Post
-     * Return :
-     * - ResponseEntity<Void> :
-     * - Success : 200 ok
-     * - Failed : error
-     * <p>
-     * Explanation :
-     * - post 저장 요청 수신
-     * - 요청 처리 결과 반환
-     * <p>
-     * Scenario :
-     * - 1. extension 에서 저장 요청
-     * - 2. weblog page 에서 저장 요청
+    /***
+     * 사용자가 작성한 Post를 저장합니다.
+     *
+     * @param postRequest 사용자가 저장을 요청한 Post;
+     *                    제목( title ), 본문( content ), 주소( url )는 반드시 포함해야 합니다.
+     * @param userDetails 저장을 요청한 사용자에 대한 정보;
+     * @return 성공 코드 ( 요청을 성공적으로 처리한 경우 )
      */
     @PostMapping("/v1/posts")
     @Operation(summary = "Post 저장", description = "사용자가 작성한 Post를 저장합니다.")
@@ -51,22 +42,14 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Name : updatePost
-     * Parameter :
-     * - PostRequest postRequest : Frontend 의 수정 요청 Post
-     * Return :
-     * - ResponseEntity<Void> :
-     * - Success : 200 ok
-     * - Failed : error
-     * <p>
-     * Explanation :
-     * - post 수정 요청 수신
-     * - 요청 처리 결과 반환
-     * <p>
-     * Scenario :
-     * - 1. extension 에서 수정 요청
-     * - 2. weblog page 에서 수정 요청
+
+    /***
+     * 사용자가 본인의 Post를 업데이트합니다.
+     *
+     * @param postRequest 사용자가 업데이트 요청한 Post;
+     *                    제목( title ), 본문( content ), 주소( url )는 반드시 포함해야 합니다.
+     * @param postId 사용자가 업데이트할 기존 Post의 Id( Primary Key )
+     * @return 성공 코드 ( 요청을 성공적으로 처리한 경우 )
      */
     @PutMapping("/v1/posts")
     @Operation(summary = "Post 수정", description = "사용자가 자신이 작성한 Post를 수정하여 저장합니다.")
@@ -75,22 +58,13 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Name : getPost
-     * Parameter :
-     * - Long postId : 확인 요청한 post
-     * Return :
-     * - ResponseEntity<Post> :
-     * - Success : 200 ok && Post
-     * - Failed : error
-     * <p>
-     * Explanation :
-     * - 특정 post 에 대한 접근 요청 수신
-     * - 응답 반환
-     * <p>
-     * Scenario :
-     * - 1. post 목록에서 post Click
-     * - 2. post_id 로 post 검색
+    /***
+     * 사용자가 지정한 하나의 Post를 조회합니다.
+     *
+     * @param postId 조회할 Post의 Id( Primary Key )
+     * @param userDetails 조회를 요청한 사용자의 정보;
+     *                    Post에 대한 조회 권한이 있는지 확인하기 위해 필요합니다.
+     * @return 사용자가 지정한 하나의 Post
      */
     @GetMapping("/v1/posts/{postId}")
     @Operation(summary = "Post 조회", description = "사용자가 지정한 하나의 Post를 반환합니다.")
@@ -100,21 +74,11 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getPost(postId, userDetails));
     }
 
-    /**
-     * Name : getAllPost
-     * Parameter :
-     * - String url: web page 주소
-     * Return :
-     * - ResponseEntity<ArrayList<Post>> :
-     * - Success : 200 ok && ArrayList<Post>
-     * - Failed : error
-     * <p>
-     * Explanation :
-     * - 특정 web page 에 있는 모든 post 의 모든 post 요청
-     * - 응답 반환
-     * <p>
-     * Scenario :
-     * - 1. extension 에서 post 보기 요청
+    /***
+     * 특정 Page내의 전체 Post를 조회합니다.
+     *
+     * @param url Post를 조회할 Page의 Url
+     * @return 특정 Page내의 전체 Post List
      */
     @GetMapping("/v1/posts")
     @Operation(summary = "Post 조회", description = "Page내의 전체 Post를 반환합니다.")
@@ -123,20 +87,13 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
     }
 
-    /**
-     * Name : getPostPreview
-     * Parameter :
-     * - String url: web page 주소
-     * Return :
-     * - ResponseEntity<ArrayList<PostPreviewResponse>> :
-     * - Success : 200 ok && ArrayList<Post>
-     * - Failed : error
-     * <p>
-     * Explanation :
-     * - 특정 web page 에 있는 모든 post 의 preview 반환
-     * <p>
-     * Scenario :
-     * - 1. extension 에서 post 목록 요청
+    /***
+     * 특정 Page 내의 Post 미리보기 전체를 조회합니다.
+     *
+     * @param url Post 미리보기를 조회할 Page의 Url
+     * @param userDetails 조회를 요청한 사용자의 정보;
+     *                    사용자에게 특정 Page 내의 Post 미리보기 조회 권한이 있는지 검사하기 위해 필요합니다.
+     * @return 특정 Page 내의 Post 미리보기 전체 List
      */
     @GetMapping("/v1/posts/preview")
     @Operation(summary = "Post 미리보기 조회", description = "Page내의 Post 미리보기 전체를 반환합니다.")
@@ -146,17 +103,13 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url, userDetails));
     }
 
-    /**
-     * Name : getMyPostPreview
-     * Parameter :
-     * - String url
-     * - UserDetail userDetail
-     * Return :
-     * - ResponseEntity<ArrayList<PostPreviewResponse>>
-     * <p>
-     * Explanation :
-     * - 1. url이 입력되면 특정 웹페이지 내의 사용자 Post Preview를 전체 반환
-     * - 2. 입력되지 않으면 사용자 Post Preview를 전체 반환
+
+    /***
+     * 특정 Page에서 현재 사용자의 Post 미리보기를 조회합니다.
+     *
+     * @param url 특정 Page의 url
+     * @param userDetails  조회를 요청한 사용자의 정보;
+     * @return 특정 Page에서 현재 사용자의 Post 미리보기 전체 List
      */
     @GetMapping("/v1/posts/mine")
     @Operation(summary = "내 Post 미리보기 목록 조회 Ver.1", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
@@ -178,15 +131,13 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getMyPostPreviewWithPaging(url, userDetails, offset, limit));
     }
 
-    /**
-     * Name : deletePost
-     * Parameter :
-     * - Long postId
-     * Return :
-     * - ResponseEntity<Void>
-     * <p>
-     * Explanation :
-     * - postId 로 Post 삭제
+    /***
+     * 지정한 Post를 삭제합니다.
+     *
+     * @param postId 지정한 Post의 Id ( Primary Key )
+     * @param userDetails Post삭제를 요청한 사용자 정보;
+     *                    지정한 Post를 삭제할 권한이 있는 사용자인지 확인하기 위해 필요합니다.
+     * @return 성공 코드 ( 삭제 성공 시 )
      */
     @DeleteMapping("/v1/posts/{postId}")
     @Operation(summary = "Post 삭제", description = "사용자가 자신의 Post를 삭제합니다.")
@@ -196,11 +147,23 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+    /***
+     * 인기 Post를 조회합니다.
+     *
+     * @param postPopularRequest  인기 Post를 조회기준; 조회 방식, 조회 시작 인덱스, 한 번에 조회할 Post 수를 Field로 가집니다.
+     * @return Request 조건에 일치하는 Post 미리보기 List
+     */
     @GetMapping("/v1/posts/ranks")
     public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@Valid @ModelAttribute PostPopularRequest postPopularRequest) {
         return ResponseEntity.ok(postServiceImpl.getPopularPosts(postPopularRequest));
     }
 
+    /***
+     * 검색 결과에 포함된 Post의 미리보기 List를 반환합니다.
+     *
+     * @param postSearchRequest Post 검색 요청; maximum number of books, 검색 타입, 조회 시작 인덱스, 한 번에 조회할 Post 수를 Field로 가집니다.
+     * @return Request 조건에 일치하는 Post 미리보기 List
+     */
     @GetMapping("/v1/search/posts")
     public ResponseEntity<List<PostSearchResponse>> searchPost(@Valid @ModelAttribute PostSearchRequest postSearchRequest) {
         return ResponseEntity.ok(postServiceImpl.searchPost(postSearchRequest));

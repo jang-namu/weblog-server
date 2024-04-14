@@ -29,8 +29,7 @@ public class CommentController {
      * @param commentRequest 사용자가 저장을 요청한 댓글. 댓글의 본문( Content )은 공백일 수 없습니다.
      * @param userDetails 댓글 저장을 요청한 user에 대한 정보;
      *                    댓글 저장을 요청한 user가 적절한 권한을 가진 사용자인지 확인하기 위해 필요합니다.
-     * @return 사용자의 요청을 성공적으로 처리한 경우 성공 코드를 반환합니다.
-     * Todo @throws
+     * @return 성공 코드( 사용자의 요청을 성공적으로 처리한 경우 )
      * */
     @Operation(summary = "댓글 저장", description = "사용자가 작성한 댓글 저장")
     @PostMapping("/v1/comments")
@@ -45,8 +44,7 @@ public class CommentController {
      * @param commentId 사용자가 지정한 댓글의 Id( Primary Key ).
      * @param userDetails 댓글 삭제를 요청한 user에 대한 정보;
      *                    댓글의 소유자와 삭제 요청자가 동일한지 확인하기 위해 필요합니다.
-     * @return 사용자의 요청을 성공적으로 처리한 경우 성공 코드를 반환합니다.
-     * Todo @throws
+     * @return 성공 코드( 사용자의 요청을 성공적으로 처리한 경우 )
      * */
     @Operation(summary = "댓글 삭제", description = "사용자가 지정한 자신의 댓글 삭제")
     @DeleteMapping("/v1/comments/{commentId}")
@@ -63,8 +61,7 @@ public class CommentController {
      * @param commentId 사용자가 업데이트 요청한 댓글의 Id ( Primary Key ).
      * @param userDetails 댓글 업데이트를 요청한 user에 대한 정보;
      *                    댓글의 소유자와 업데이트 요청자가 동일한지 확인하기 위해 필요합니다.
-     * @return 사용자의 요청을 성공적으로 처리한 경우 성공 코드를 반환합니다.
-     * @throws Exception
+     * @return 성공 코드( 사용자의 요청을 성공적으로 처리한 경우 )
      */
     @Operation(summary = "댓글 수정", description = "사용자가 자신의 댓글 수정")
     @PatchMapping("/v1/comments/{commentId}")
@@ -79,7 +76,7 @@ public class CommentController {
      * 특정 Page에 작성된 댓글 전체를 조회합니다.
      *
      * @param pageUrl 댓글 조회를 요청한 Page의 URL.
-     * @return 특정 Page에 작성된 댓글 List를 반환합니다.
+     * @return 특정 Page에 작성된 댓글 List
      */
     @Operation(summary = "댓글 조회(URL)", description = "URL에 작성된 댓글 조회 ")
     @GetMapping("/v1/comments")
@@ -91,7 +88,7 @@ public class CommentController {
      * 특정 Post에 작성된 댓글 전체를 조회합니다.
      *
      * @param postId 댓글 조회를 요청한 Post의 Id( Primary Key )
-     * @return 특정 Post에 작성된 댓글 List를 반환합니다
+     * @return 특정 Post에 작성된 댓글 List
      */
     @Operation(summary = "댓글 조회(postId)", description = "포스트에 달린 댓글 조회 ")
     @GetMapping("/v1/comments/{postId}")

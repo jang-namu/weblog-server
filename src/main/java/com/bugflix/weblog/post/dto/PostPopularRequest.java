@@ -20,3 +20,4 @@ public class PostPopularRequest {
     @NotNull @Positive
     private Integer limit;
 }
+
