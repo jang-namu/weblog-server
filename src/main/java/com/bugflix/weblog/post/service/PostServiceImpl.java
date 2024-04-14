@@ -4,10 +4,6 @@ import com.bugflix.weblog.like.service.LikeServiceImpl;
 import com.bugflix.weblog.page.domain.Page;
 import com.bugflix.weblog.page.repository.PageRepository;
 import com.bugflix.weblog.post.domain.Post;
-import com.bugflix.weblog.post.dto.PostPopularRequest;
-import com.bugflix.weblog.post.dto.PostPreviewResponse;
-import com.bugflix.weblog.post.dto.PostRequest;
-import com.bugflix.weblog.post.dto.PostResponse;
 import com.bugflix.weblog.post.dto.*;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
@@ -19,9 +15,9 @@ import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -228,16 +224,9 @@ public class PostServiceImpl {
         for (Post post : posts) {
             Long postId = post.getPostId();
 
-            PostPreviewResponse postPreview = new PostPreviewResponse(
-                    post,
+            postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
-                    userService.findNicknameByPostId(postId),
-                    likeServiceImpl.isLiked(postId, userId),
-                    post.getCreatedDate(),
-                    post.getModifiedDate(),
-                    likeServiceImpl.countLikes(postId));
-
-            postPreviews.add(postPreview);
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
         }
         return postPreviews;
     }
@@ -246,7 +235,6 @@ public class PostServiceImpl {
      * 내가 작성한 모든 Post의 Preview를 반환
      */
     public List<PostPreviewResponse> getMyPostPreview(UserDetails userDetails) {
-
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
         // 1. User 정보 받아오기
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
@@ -255,17 +243,46 @@ public class PostServiceImpl {
         // 3. Post List PostPreviewResponse로 변환하여 반환
         posts.forEach(post -> {
             Long postId = post.getPostId();
-
-            PostPreviewResponse postPreview = new PostPreviewResponse(
-                    post,
+            postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
-                    userService.findNicknameByPostId(postId),
-                    likeServiceImpl.isLiked(postId, userId),
-                    post.getCreatedDate(),
-                    post.getModifiedDate(),
-                    likeServiceImpl.countLikes(postId));
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
+        });
 
-            postPreviews.add(postPreview);
+        return postPreviews;
+    }
+
+    public List<PostPreviewResponse> getMyPostPreviewWithPaging(String url, UserDetails userDetails,
+                                                                Integer offset, Integer limit) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByPageUrlAndUserUserId(url, userId,
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
+        for (Post post : posts) {
+            Long postId = post.getPostId();
+
+            postPreviews.add(PostPreviewResponse.of(post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
+        }
+        return postPreviews;
+    }
+
+    public List<PostPreviewResponse> getMyPostPreviewWithPaging(UserDetails userDetails, Integer offset, Integer limit) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByUserUserId(userId,
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
+        posts.forEach(post -> {
+            Long postId = post.getPostId();
+            postPreviews.add(PostPreviewResponse.of(post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
         });
 
         return postPreviews;

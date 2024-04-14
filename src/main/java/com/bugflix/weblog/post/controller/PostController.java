@@ -159,15 +159,23 @@ public class PostController {
      * - 2. 입력되지 않으면 사용자 Post Preview를 전체 반환
      */
     @GetMapping("/v1/posts/mine")
-    @Operation(summary = "Post 미리보기 반환", description = "사용자의 Post 미리보기를 반환합니다.")
+    @Operation(summary = "내 Post 미리보기 목록 조회 Ver.1", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
+                                                                  "포함되어 있지 않은 경우에는 내가 작성한 포스트 목록을 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url", required = false) String url,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
-        List<PostPreviewResponse> postPreviewResponses;
+        if (url == null) return ResponseEntity.ok(postServiceImpl.getMyPostPreview(userDetails));
+        return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url, userDetails));
+    }
 
-        if (url == null) postPreviewResponses = postServiceImpl.getMyPostPreview(userDetails);
-        else postPreviewResponses = postServiceImpl.getMyPostPreview(url, userDetails);
-
-        return ResponseEntity.ok(postPreviewResponses);
+    @GetMapping("/v2/posts/mine")
+    @Operation(summary = "내 Post 미리보기 목록 조회 Ver.2", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
+                                                                  "포함되어 있지 않은 경우에는 내가 작성한 포스트 목록을 반환합니다.")
+    public ResponseEntity<List<PostPreviewResponse>> getMyPostPreviewWithPaging(@RequestParam(name = "url", required = false) String url,
+                                                                      @RequestParam Integer offset,
+                                                                      @RequestParam Integer limit,
+                                                                      @AuthenticationPrincipal UserDetails userDetails) {
+        if (url == null) return ResponseEntity.ok(postServiceImpl.getMyPostPreviewWithPaging(userDetails, offset, limit));
+        return ResponseEntity.ok(postServiceImpl.getMyPostPreviewWithPaging(url, userDetails, offset, limit));
     }
 
     /**

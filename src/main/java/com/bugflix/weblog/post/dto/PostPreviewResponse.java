@@ -1,6 +1,8 @@
 package com.bugflix.weblog.post.dto;
 
 import com.bugflix.weblog.post.domain.Post;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -17,6 +19,21 @@ public class PostPreviewResponse {
     private String imageUrl;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+
+    @Builder(access = AccessLevel.PRIVATE)
+    private PostPreviewResponse(Long postId, String title, String nickname, List<String> tags,
+                                Long likeCount, Boolean isLiked, String imageUrl,
+                                LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        this.postId = postId;
+        this.title = title;
+        this.nickname = nickname;
+        this.tags = tags;
+        this.likeCount = likeCount;
+        this.isLiked = isLiked;
+        this.imageUrl = imageUrl;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
+    }
 
     public PostPreviewResponse(
             Post post,
@@ -35,6 +52,20 @@ public class PostPreviewResponse {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
         this.likeCount = likeCount;
+    }
+
+    public static PostPreviewResponse of(Post post, List<String> tags, String nickname, Boolean isLiked) {
+        return PostPreviewResponse.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .imageUrl(post.getImageUrl())
+                .tags(tags)
+                .nickname(nickname)
+                .isLiked(isLiked)
+                .createdDate(post.getCreatedDate())
+                .likeCount(post.getLikeCount())
+                .modifiedDate(post.getModifiedDate())
+                .build();
     }
 
 }
