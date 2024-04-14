@@ -25,7 +25,7 @@ public class CanvasService {
 
     public void update(long canvasId, CanvasRequest request, UserDetails userDetails) {
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
-        Canvas canvas = canvasRepository.findById(canvasId).orElseThrow(() -> new RuntimeException("캔버스를 찾을 수 없습니다."));
+        Canvas canvas = canvasRepository.findById(canvasId).orElseThrow(() -> new IllegalArgumentException("캔버스를 찾을 수 없습니다."));
         validateIsOwnedCanvas(canvas, userId);
         canvas.update(request);
         canvasRepository.save(canvas);
@@ -33,7 +33,15 @@ public class CanvasService {
 
     private void validateIsOwnedCanvas(Canvas canvas, Long userId) {
         if (!Objects.equals(userId, canvas.getUser().getUserId())) {
-            throw new RuntimeException("소유하지 않은 Post입니다.");
+            throw new RuntimeException("소유하지 않은 Canvas입니다.");
         }
     }
+
+    public void delete(long canvasId, UserDetails userDetails) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Canvas canvas = canvasRepository.findById(canvasId).orElseThrow(() -> new IllegalArgumentException("캔버스를 찾을 수 없습니다."));
+        validateIsOwnedCanvas(canvas, userId);
+        canvasRepository.delete(canvas);
+    }
+
 }

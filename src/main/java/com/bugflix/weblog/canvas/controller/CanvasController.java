@@ -35,7 +35,8 @@ public class CanvasController {
     @DeleteMapping("/v1/canvases/{canvasId}")
     public ResponseEntity<?> deleteCanvas(@PathVariable long canvasId,
                                           @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.badRequest().build();
+        canvasService.delete(canvasId, userDetails);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/v1/canvases")
