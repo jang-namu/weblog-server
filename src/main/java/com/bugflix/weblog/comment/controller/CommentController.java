@@ -59,4 +59,12 @@ public class CommentController {
     public List<CommentResponse> getCommentsByPostId(@PathVariable Long postId) {
         return commentService.getCommentsByPostId(postId);
     }
+
+    @Operation(summary = "댓글 조회(postId) Ver.2", description = "포스트에 달린 댓글 조회(Paging)")
+    @GetMapping("/v2/comments/{postId}")
+    public List<CommentResponse> getCommentsByPostId(@PathVariable Long postId,
+                                                     @RequestParam Integer offset,
+                                                     @RequestParam Integer limit) {
+        return commentService.getCommentsByPostIdWithPaging(postId, offset, limit);
+    }
 }

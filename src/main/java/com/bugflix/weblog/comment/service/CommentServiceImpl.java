@@ -9,6 +9,8 @@ import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -106,6 +108,19 @@ public class CommentServiceImpl {
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         List<CommentResponse> commentResponses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByPostPostId(postId);
+        for (Comment comment : comments) {
+            User user = comment.getUser();
+            commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
+        }
+
+        return commentResponses;
+    }
+
+    public List<CommentResponse> getCommentsByPostIdWithPaging(Long postId, Integer offset, Integer limit) {
+        List<CommentResponse> commentResponses = new ArrayList<>();
+        Page<Comment> comments = commentRepository.findAllByPostPostId(postId,
+                PageRequest.of(offset, limit));
+
         for (Comment comment : comments) {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
