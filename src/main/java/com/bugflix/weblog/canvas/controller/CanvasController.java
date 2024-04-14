@@ -28,7 +28,8 @@ public class CanvasController {
     public ResponseEntity<?> updateCanvas(@PathVariable long canvasId,
                                           @RequestBody CanvasRequest request,
                                           @AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.badRequest().build();
+        canvasService.update(canvasId, request, userDetails);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/v1/canvases/{canvasId}")

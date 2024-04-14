@@ -32,4 +32,9 @@ public class Canvas {
     public static Canvas of(CanvasRequest request, User user) {
         return new Canvas(request.getTitle(), request.getKey(), user);
     }
+
+    public void update(CanvasRequest request) {
+        this.title = request.getTitle();
+        this.key = request.getKey();
+    }
 }
