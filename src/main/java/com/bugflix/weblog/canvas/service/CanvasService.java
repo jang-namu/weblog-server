@@ -2,13 +2,19 @@ package com.bugflix.weblog.canvas.service;
 
 import com.bugflix.weblog.canvas.domain.Canvas;
 import com.bugflix.weblog.canvas.dto.CanvasRequest;
+import com.bugflix.weblog.canvas.dto.CanvasResponse;
 import com.bugflix.weblog.canvas.repository.CanvasRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -44,4 +50,11 @@ public class CanvasService {
         canvasRepository.delete(canvas);
     }
 
+    @Transactional(readOnly = true)
+    public List<CanvasResponse> getRecentCanvases(Integer offset, Integer limit) {
+        Sort strategy = Sort.by(Sort.Direction.DESC, "canvasId");
+        Page<Canvas> canvases = canvasRepository.findAll(PageRequest.of(offset, limit, strategy));
+        return canvases.stream()
+                .map(canvas -> CanvasResponse.of(canvas, canvas.getUser())).toList();
+    }
 }

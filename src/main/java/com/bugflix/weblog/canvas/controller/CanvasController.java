@@ -10,6 +10,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
@@ -40,12 +42,12 @@ public class CanvasController {
     }
 
     @GetMapping("/v1/canvases")
-    public ResponseEntity<CanvasResponse> getRecentCanvases(@RequestParam Long offset, @RequestParam Long limit) {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<List<CanvasResponse>> getRecentCanvases(@RequestParam Integer offset, @RequestParam Integer limit) {
+        return ResponseEntity.ok().body(canvasService.getRecentCanvases(offset, limit));
     }
 
     @GetMapping("/v1/canvases/mine")
-    public ResponseEntity<CanvasResponse> getMyCanvases(@RequestParam Long offset, @RequestParam Long limit,
+    public ResponseEntity<List<CanvasResponse>> getMyCanvases(@RequestParam Long offset, @RequestParam Long limit,
                                                         @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.badRequest().build();
     }
