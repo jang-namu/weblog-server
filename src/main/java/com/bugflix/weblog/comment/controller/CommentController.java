@@ -96,6 +96,14 @@ public class CommentController {
         return commentService.getCommentsByPostId(postId);
     }
 
+    /**
+     * 특정 Post에 작성된 댓글 전체를 페이징하여 조회합니다.
+     *
+     * @param postId 지정한 Post의 Id ( Primary Key )
+     * @param offset 조회 시작 인덱스
+     * @param limit 한 번에 조회할 갯수
+     * @return
+     */
     @Operation(summary = "댓글 조회(postId) Ver.2", description = "포스트에 달린 댓글 조회(Paging)")
     @GetMapping("/v2/comments/{postId}")
     public List<CommentResponse> getCommentsByPostId(@PathVariable Long postId,

@@ -120,6 +120,15 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getMyPostPreview(url, userDetails));
     }
 
+    /**
+     * (페이징) 특정 Page에서 현재 사용자의 Post 미리보기를 조회합니다.
+     *
+     * @param url 특정 Page의 url
+     * @param offset 조회 시작 인덱스
+     * @param limit 한 번에 조회할 갯수
+     * @param userDetails  조회를 요청한 사용자의 정보;
+     * @return 특정 Page에서 현재 사용자의 Post 미리보기 전체 List
+     */
     @GetMapping("/v2/posts/mine")
     @Operation(summary = "내 Post 미리보기 목록 조회 Ver.2", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
                                                                   "포함되어 있지 않은 경우에는 내가 작성한 포스트 목록을 반환합니다.")
