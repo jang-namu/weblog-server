@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Entity(name = "follow_tb")
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"follower_id","following_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +30,9 @@ public class Follow extends BaseTimeEntity {
 
     @Builder
     public Follow(User follower, User following){
+        if (Objects.equals(follower.getUserId(), following.getUserId())) {
+            throw new IllegalArgumentException("Can't add self follow");
+        }
         this.follower = follower;
         this.following = following;
     }
