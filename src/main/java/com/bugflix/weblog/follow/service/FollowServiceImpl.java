@@ -1,5 +1,7 @@
 package com.bugflix.weblog.follow.service;
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.follow.domain.Follow;
 import com.bugflix.weblog.follow.dto.FollowRequest;
 import com.bugflix.weblog.follow.dto.FollowResponse;
@@ -42,6 +44,28 @@ public class FollowServiceImpl {
 
     public List<FollowResponse> searchFollwings(UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
+        List<Follow> follows = followRepository.findByFollower(user);
+        ArrayList<FollowResponse> followResponses = new ArrayList<>();
+
+        return follows.stream()
+                .map(Follow::getFollowing)
+                .map(following -> FollowResponse.of(following, following.getProfile()))
+                .toList();
+    }
+
+    public List<FollowResponse> searchFollowers(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
+        List<Follow> follows = followRepository.findByFollowing(user);
+        return follows.stream()
+                .map(Follow::getFollower)
+                .map(follower -> FollowResponse.of(follower, follower.getProfile()))
+                .toList();
+    }
+
+    public List<FollowResponse> searchFollwings(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
         List<Follow> follows = followRepository.findByFollower(user);
         ArrayList<FollowResponse> followResponses = new ArrayList<>();
 

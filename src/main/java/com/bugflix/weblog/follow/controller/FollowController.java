@@ -45,7 +45,7 @@ public class FollowController {
      * @param userDetails 팔로우 조회 요청한 사용자에 대한 정보;
      * @return 팔로워 목록 List
      */
-    @GetMapping("/v1/follows/follower")
+    @GetMapping("/v1/follows/mine/follower")
     @Operation(summary = "follower 조회", description = "현재 사용자를 follow하는 follower 목록을 조회합니다.")
     public ResponseEntity<List<FollowResponse>> searchFollowing(@AuthenticationPrincipal UserDetails userDetails) {
 
@@ -58,11 +58,35 @@ public class FollowController {
      * @param userDetails 팔로잉 조회 요청한 사용자에 대한 정보;
      * @return 팔로잉 목록 List
      */
-    @GetMapping("/v1/follows/following")
+    @GetMapping("/v1/follows/mine/following")
     @Operation(summary = "following 조회", description = "현재 사용자가 following 중인 사용자 목록을 조회합니다.")
     public ResponseEntity<List<FollowResponse>> searchFollower(@AuthenticationPrincipal UserDetails userDetails){
 
         return ResponseEntity.ok(followService.searchFollwings(userDetails));
+    }
+
+    /**
+     * 지정한 사용자를 팔로우하는 사용자 리스트 조회
+     * @param nickname
+     * @return 팔로워 목록 List
+     */
+    @GetMapping("/v1/follows/{nickname}/follower")
+    @Operation(summary = "follower 조회", description = "현재 사용자를 follow하는 follower 목록을 조회합니다.")
+    public ResponseEntity<List<FollowResponse>> searchFollowing(@PathVariable String nickname) {
+
+        return ResponseEntity.ok(followService.searchFollowers(nickname));
+    }
+
+    /**
+     * 지정한 사용자가 팔로우하는 사용자 리스트 조회
+     * @param nickname
+     * @return 팔로잉 목록 List
+     */
+    @GetMapping("/v1/follows/{nickname}/following")
+    @Operation(summary = "following 조회", description = "현재 사용자가 following 중인 사용자 목록을 조회합니다.")
+    public ResponseEntity<List<FollowResponse>> searchFollower(@PathVariable String nickname){
+
+        return ResponseEntity.ok(followService.searchFollwings(nickname));
     }
 
     /**
