@@ -9,37 +9,37 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionAdvice {
 
     @ExceptionHandler(ExpiredTokenException.class)
-    public ResponseEntity handleExpiredTokenException(ExpiredTokenException e) {
+    public ResponseEntity<?> handleExpiredTokenException(ExpiredTokenException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(FailedFetchResourceException.class)
-    public ResponseEntity handleFailedFetchResourceException(FailedFetchResourceException e) {
+    public ResponseEntity<?> handleFailedFetchResourceException(FailedFetchResourceException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(FailedTokenExchangeException.class)
-    public ResponseEntity handleFailedTokenExchangeException(FailedTokenExchangeException e) {
+    public ResponseEntity<?> handleFailedTokenExchangeException(FailedTokenExchangeException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity handleInvalidTokenException(InvalidTokenException e) {
+    public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(NoOwnershipException.class)
-    public ResponseEntity handleNoOwnershipException(NoOwnershipException e) {
+    public ResponseEntity<?> handleNoOwnershipException(NoOwnershipException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(NotSupportedLoginTypeException.class)
-    public ResponseEntity handleNotSupportedLoginTypeException(NotSupportedLoginTypeException e) {
+    public ResponseEntity<?> handleNotSupportedLoginTypeException(NotSupportedLoginTypeException e) {
         return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity handleResourceNotFoundException(ResourceNotFoundException e) {
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException e) {
         return ResponseEntity.badRequest().build();
     }
 }
