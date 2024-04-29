@@ -55,6 +55,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims()
                 .subject(account)
                 .add("roles", roles)
+                .add("type", "access")
                 .build();
 
         Date now = new Date();
@@ -73,6 +74,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims()
                 .subject(account)
                 .add("roles", roles)
+                .add("type", "refresh")
                 .build();
 
         Date now = new Date();
@@ -121,7 +123,18 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            Claims payload = claims.getPayload();
+            return (!payload.getExpiration().before(new Date()) && payload.get("type").equals("access"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+            Claims payload = claims.getPayload();
+            return (!payload.getExpiration().before(new Date()) && payload.get("type").equals("refresh"));
         } catch (Exception e) {
             return false;
         }

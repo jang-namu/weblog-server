@@ -50,7 +50,7 @@ public class AuthServiceImpl {
 
     public String refresh(HttpServletRequest httpServletRequest, SignInRequest signInRequest) {
         String authorizationHeader = jwtProvider.resolveToken(httpServletRequest);
-        if (!jwtProvider.validateToken(authorizationHeader)) {
+        if (!jwtProvider.validateRefreshToken(authorizationHeader)) {
             throw new ExpiredTokenException(Errors.EXPIRED_JWT);
         }
         RefreshToken refreshToken = refreshTokenRepository.findById(signInRequest.getEmail()).
