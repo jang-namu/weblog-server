@@ -1,5 +1,7 @@
 package com.bugflix.weblog.user.service;
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.user.domain.Authority;
 import com.bugflix.weblog.profile.domain.Profile;
 import com.bugflix.weblog.user.domain.User;
@@ -7,6 +9,7 @@ import com.bugflix.weblog.user.dto.SignInRequest;
 import com.bugflix.weblog.user.dto.SignUpRequest;
 import com.bugflix.weblog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,18 +41,19 @@ public class UserServiceImpl {
         userRepository.save(user);
     }
 
-    public void unregister(SignInRequest signInRequest) throws Exception {
+    public void unregister(SignInRequest signInRequest) {
         User user = userRepository.findByEmail(signInRequest.getEmail()).orElseThrow(() ->
-                new Exception("계정을 찾을 수 없습니다."));
+                new ResourceNotFoundException(Errors.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword())) {
-            throw new Exception();
+            throw new BadCredentialsException(Errors.INVALID_PASSWORD.getDescription());
         }
         userRepository.delete(user);
     }
 
     public String findNicknameByPostId(Long postId) {
-        User user = userRepository.findByPosts_PostId(postId);
+        User user = userRepository.findByPosts_PostId(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
         return user.getNickname();
     }
 

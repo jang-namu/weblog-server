@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping(value = "/v1/auths/reissue")
     public ResponseEntity<TokenResponse> refreshToken(
             HttpServletRequest httpServletRequest,
-            @Valid @RequestBody SignInRequest signInRequest) throws Exception {
+            @Valid @RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok().body(
                 TokenResponse.builder()
                         .accessToken(authService.refresh(httpServletRequest, signInRequest))

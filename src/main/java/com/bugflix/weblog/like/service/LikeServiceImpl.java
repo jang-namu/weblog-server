@@ -1,5 +1,7 @@
 package com.bugflix.weblog.like.service;
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
@@ -42,11 +44,11 @@ public class LikeServiceImpl {
      * - isLiked 와 likeCount 를 LikeStatusResponse 로 encapsulation 하여 반환
      */
     @Transactional
-    public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) throws Exception {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception("해당하는 Post를 찾을 수 없습니다"));
+    public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
         Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
 
-        Like like = likeRepository.findById_UserIdAndId_PostId(userId, postId);
+        Like like = likeRepository.findById_UserIdAndId_PostId(userId, postId).orElse(null);
 
         if (like != null) {
             likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic

@@ -1,5 +1,6 @@
 package com.bugflix.weblog.security.service;
 
+import com.bugflix.weblog.common.Errors;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class CustomUserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return new CustomUserDetails(userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("일치하는 User를 찾을 수 없습니다."))
+                .orElseThrow(() -> new UsernameNotFoundException(Errors.USER_NOT_FOUND.getDescription()))
         );
     }
 }

@@ -30,8 +30,7 @@ public class ProfileController {
      */
     @GetMapping("/v1/profiles/mine")
     @Operation(summary = "Profile 조회", description = "사용자 본인 Profile을 조회합니다.")
-    public ResponseEntity<ProfileResponse> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) throws Exception {
-
+    public ResponseEntity<ProfileResponse> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(profileService.getMyProfile(userDetails));
     }
 

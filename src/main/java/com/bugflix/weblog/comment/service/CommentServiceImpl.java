@@ -4,6 +4,9 @@ import com.bugflix.weblog.comment.domain.Comment;
 import com.bugflix.weblog.comment.dto.CommentRequest;
 import com.bugflix.weblog.comment.dto.CommentResponse;
 import com.bugflix.weblog.comment.repository.CommentRepository;
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.NoOwnershipException;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
@@ -40,12 +43,12 @@ public class CommentServiceImpl {
     public void saveComment(CommentRequest commentRequest, UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
         Post post = postRepository.findById(commentRequest.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("invalid postId"));
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
 
         Comment comment;
         if (commentRequest.getParentCommentId() != null) {
             Comment parentComment = commentRepository.findById(commentRequest.getParentCommentId())
-                    .orElseThrow(() -> new IllegalArgumentException("parentComment를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new ResourceNotFoundException(Errors.PARENT_COMMENT_NOT_FOUND));
             valdiateIsOnSamePost(post, parentComment);
             comment = Comment.of(commentRequest.getContent(), user, post, parentComment);
         } else {
@@ -62,52 +65,48 @@ public class CommentServiceImpl {
     }
 
     public void updateComment(Long commentId, String content, UserDetails userDetails) {
-        User user = ((CustomUserDetails) userDetails).getUser();
-
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
-
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.COMMENT_NOT_FOUND));
+        validateIsOwnedComment(userDetails, comment);
         /*
          todo: 1.시큐리티 컨텍스트의 UserDetails와 comment의 소유주인 User가
           서로 다른 엔티티 매니저에 의해 관리되면 조건문이 계속 false가 되진 않는지
          todo: 2.Transactional 어노테이션을 사용하지 않아도 comment.getUser()가 가능한가?
           => ManyToOne 연관관계로 기본 Fetch 전략이 EAGER
          */
-        if (comment.getUser().getUserId() == user.getUserId()) {
-            comment.updateContent(content);
-            commentRepository.save(comment);
-        } else {
-            throw new IllegalArgumentException("Only writer can update");
+        comment.updateContent(content);
+        commentRepository.save(comment);
+    }
+
+    private void validateIsOwnedComment(UserDetails userDetails, Comment comment) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        if (!Objects.equals(comment.getUser().getUserId(), userId)) {
+            throw new NoOwnershipException(Errors.IS_NOT_MINE);
         }
     }
 
     public void deleteComment(Long commentId, UserDetails userDetails) {
-        User user = ((CustomUserDetails) userDetails).getUser();
-
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("invalid commentId"));
-
-        if (Objects.equals(user.getUserId(), comment.getUser().getUserId())) {
-            commentRepository.delete(comment);
-        } else {
-            throw new IllegalArgumentException("Only writer can delete");
-        }
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.COMMENT_NOT_FOUND));
+        validateIsOwnedComment(userDetails, comment);
+        commentRepository.delete(comment);
     }
 
     public List<CommentResponse> getCommentsByUrl(String url) {
         List<CommentResponse> commentResponses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByPostPageUrl(url);
+
         for (Comment comment : comments) {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
         }
-
         return commentResponses;
     }
 
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         List<CommentResponse> commentResponses = new ArrayList<>();
         List<Comment> comments = commentRepository.findAllByPostPostId(postId);
+
         for (Comment comment : comments) {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
@@ -125,7 +124,6 @@ public class CommentServiceImpl {
             User user = comment.getUser();
             commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
         }
-
         return commentResponses;
     }
 }

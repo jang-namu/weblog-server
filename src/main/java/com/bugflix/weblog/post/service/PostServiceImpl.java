@@ -1,5 +1,7 @@
 package com.bugflix.weblog.post.service;
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.like.service.LikeServiceImpl;
 import com.bugflix.weblog.page.domain.Page;
 import com.bugflix.weblog.page.repository.PageRepository;
@@ -93,12 +95,12 @@ public class PostServiceImpl {
      * - 1. postId 가 존재하지 않으면 예외처리
      * - 2. postId 가 존재하면 사용자가 요청한 정보로 update하여 저장
      */
-    public void updatePost(PostRequest postRequest, Long postId) throws Exception {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
+    public void updatePost(PostRequest postRequest, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
         post.updateTitle(postRequest.getTitle());
         post.updateMemo(postRequest.getMemo());
         post.updateContent(postRequest.getContent());
-
         // Todo image_url 추가
 
         postRepository.save(post);
@@ -115,8 +117,9 @@ public class PostServiceImpl {
      * - postId 로 Post Entity 탐색
      * - Post 존재하지 않으면 예외처리, 존재하면 출력
      */
-    public PostResponse getPost(Long postId, UserDetails userDetails) throws Exception {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
+    public PostResponse getPost(Long postId, UserDetails userDetails) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
         User user = post.getUser();
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
 
@@ -124,8 +127,9 @@ public class PostServiceImpl {
                 likeServiceImpl.countLikes(postId), likeServiceImpl.isLiked(postId, userId));
     }
 
-    public PostResponse getPost(Long postId) throws Exception {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new Exception(""));
+    public PostResponse getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
         User user = post.getUser();
         return PostResponse.of(post, user, tagService.findTagsByPostId(postId),
                 likeServiceImpl.countLikes(postId), false);
@@ -143,7 +147,6 @@ public class PostServiceImpl {
      * - Post 존재하지 않으면 예외처리, 존재하면 출력
      */
     public List<PostResponse> getPosts(String url) {
-
         List<Post> resultList = postRepository.findByPageUrl(url);
         // Todo : Tag, LikeCount, Profile, nickname 등 추가 필요
         return resultList.stream().map(PostResponse::from).toList();
@@ -302,14 +305,14 @@ public class PostServiceImpl {
      * Explanation :
      * - PostId 를 매개변수로 받아, Post Entity 검색
      * - 존재하면 delete
-     * - 존재하지 않으면 IllegalArgumentException 예외 처리 ( Invalid postId )
+     * - 존재하지 않으면 ResourceNotFoundException 예외 발생
      */
     public void deletePost(Long postId, UserDetails userDetails) {
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
         // Todo Global Exception Handler 생성
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid Post Id"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
         validateIsOwnedPost(post, userId);
-
         postRepository.delete(post);
     }
 

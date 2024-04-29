@@ -53,7 +53,8 @@ public class PostController {
      */
     @PutMapping("/v1/posts")
     @Operation(summary = "Post 수정", description = "사용자가 자신이 작성한 Post를 수정하여 저장합니다.")
-    public ResponseEntity<Void> updatePost(@Valid @RequestBody PostRequest postRequest, @RequestParam(name = "postId") Long postId) throws Exception {
+    public ResponseEntity<Void> updatePost(@Valid @RequestBody PostRequest postRequest,
+                                           @RequestParam Long postId) {
         postServiceImpl.updatePost(postRequest, postId);
         return ResponseEntity.ok().build();
     }
@@ -69,7 +70,7 @@ public class PostController {
     @GetMapping("/v1/posts/{postId}")
     @Operation(summary = "Post 조회", description = "사용자가 지정한 하나의 Post를 반환합니다.")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId,
-                                                @AuthenticationPrincipal UserDetails userDetails) throws Exception {
+                                                @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPost(postId));
         return ResponseEntity.ok(postServiceImpl.getPost(postId, userDetails));
     }
@@ -82,7 +83,7 @@ public class PostController {
      */
     @GetMapping("/v1/posts")
     @Operation(summary = "Post 조회", description = "Page내의 전체 Post를 반환합니다.")
-    public ResponseEntity<List<PostResponse>> getAllPost(@RequestParam(name = "url") String url) {
+    public ResponseEntity<List<PostResponse>> getAllPost(@RequestParam String url) {
 
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
     }
@@ -97,7 +98,7 @@ public class PostController {
      */
     @GetMapping("/v1/posts/preview")
     @Operation(summary = "Post 미리보기 조회", description = "Page내의 Post 미리보기 전체를 반환합니다.")
-    public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam(name = "url") String url,
+    public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam String url,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
         return ResponseEntity.ok(postServiceImpl.getPostPreview(url, userDetails));

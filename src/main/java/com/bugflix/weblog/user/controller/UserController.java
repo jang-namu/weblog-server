@@ -43,7 +43,7 @@ public class UserController {
     @Operation(summary = "회원탈퇴",
             description = "아이디(email)과 비밀번호 일치여부를 확인하고, 일치하다면 회원 정보를 삭제합니다.")
     @DeleteMapping("/v1/users")
-    public ResponseEntity<Void> unregister(@Valid @RequestBody SignInRequest signInRequest) throws Exception {
+    public ResponseEntity<Void> unregister(@Valid @RequestBody SignInRequest signInRequest) {
         userService.unregister(signInRequest);
         return ResponseEntity.ok().build();
     }

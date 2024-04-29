@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @Tag(name = "Like API", description = "좋아요 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class LikeController {
     @PatchMapping("/v1/likes/{postId}")
     @Operation(summary = "좋아요 정보 반환", description = "Post의 좋아요 개수, 나의 좋아요 여부 반환")
     public ResponseEntity<LikeStatusResponse> changeLikeStatus(@PathVariable Long postId,
-                                                               @AuthenticationPrincipal UserDetails userDetails) throws Exception {
+                                                               @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(likeServiceImpl.changeLikeStatus(postId, userDetails));
     }
 }
