@@ -141,6 +141,22 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getMyPostPreviewWithPaging(url, userDetails, offset, limit));
     }
 
+    /**
+     * (페이징) 다른 사용자의 Post 미리보기를 조회합니다.
+     *
+     * @param offset 조회 시작 인덱스
+     * @param limit 한 번에 조회할 갯수
+     * @param nickname 검색할 사용자 이름
+     * @return 다른 사용자의 Post 미리보기 전체 List
+     */
+    @GetMapping("/v2/posts/users/{nickname}")
+    @Operation(summary = "다른 사람의 Post 미리보기 목록 조회", description = "다른 사람이 작성한 포스트 목록을 반환합니다.")
+    public ResponseEntity<List<PostPreviewResponse>> getOthersPostPreviewWithPaging(@RequestParam Integer offset,
+                                                                                @RequestParam Integer limit,
+                                                                                @PathVariable String nickname) {
+        return ResponseEntity.ok(postServiceImpl.getOthersPostPreviewWithPaging(nickname, offset, limit));
+    }
+
     /***
      * 지정한 Post를 삭제합니다.
      *

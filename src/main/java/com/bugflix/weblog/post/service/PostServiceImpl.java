@@ -13,6 +13,7 @@ import com.bugflix.weblog.tag.domain.Tag;
 import com.bugflix.weblog.tag.repository.TagRepository;
 import com.bugflix.weblog.tag.service.TagServiceImpl;
 import com.bugflix.weblog.user.domain.User;
+import com.bugflix.weblog.user.repository.UserRepository;
 import com.bugflix.weblog.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class PostServiceImpl {
     private final UserServiceImpl userService;
     private final TagRepository tagRepository;
     private final TagServiceImpl tagService;
+    private final UserRepository userRepository;
 
 
     /**
@@ -290,6 +292,25 @@ public class PostServiceImpl {
             postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
                     userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
+        });
+
+        return postPreviews;
+    }
+
+    public List<PostPreviewResponse> getOthersPostPreviewWithPaging(String nickname, Integer offset, Integer limit) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByUserUserId(user.getUserId(),
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewResponse> postPreviews = new ArrayList<>();
+        posts.forEach(post -> {
+            Long postId = post.getPostId();
+            postPreviews.add(PostPreviewResponse.of(post,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, user.getUserId())));
         });
 
         return postPreviews;
