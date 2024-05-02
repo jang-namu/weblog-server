@@ -43,8 +43,11 @@ public class ProfileController {
      */
     @GetMapping("/v1/profiles/users/{nickname}")
     @Operation(summary = "다른 사람 프로필 조회", description = "다른 사람의 프로필을 조회합니다.")
-    public ResponseEntity<ProfileResponse> getOthersProfile(@PathVariable String nickname) {
-        return ResponseEntity.ok(profileService.getOthersProfile(nickname));
+    public ResponseEntity<ProfileResponse> getOthersProfile(@PathVariable String nickname,
+                                                            @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null)
+            return ResponseEntity.ok(profileService.getOthersProfile(nickname));
+        return ResponseEntity.ok(profileService.getOthersProfile(nickname, userDetails));
     }
 
 }
