@@ -50,6 +50,11 @@ public class Profile extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
+    public void update(String imageUrl, String phoneNumber) {
+        this.imageUrl = imageUrl;
+        this.phoneNumber = phoneNumber;
+    }
+
     public void assignUser(User user) {
         this.user = user;
     }

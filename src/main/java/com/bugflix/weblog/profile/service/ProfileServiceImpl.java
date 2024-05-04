@@ -5,6 +5,7 @@ import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.follow.repository.FollowRepository;
 import com.bugflix.weblog.profile.domain.Profile;
 import com.bugflix.weblog.profile.dto.ProfileResponse;
+import com.bugflix.weblog.profile.dto.ProfileUpdateRequest;
 import com.bugflix.weblog.profile.repository.ProfileRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +52,12 @@ public class ProfileServiceImpl {
         boolean followed = followRepository.existsByFollowerAndFollowing(user, targetUser);
 
         return ProfileResponse.of(targetUser, profile, followed);
+    }
+
+    @Transactional
+    public void updateProfile(ProfileUpdateRequest request, UserDetails userDetails) {
+        User user = ((CustomUserDetails) userDetails).getUser();
+        user.updateProfile(request);
+        userRepository.save(user);
     }
 }

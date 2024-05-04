@@ -1,6 +1,7 @@
 package com.bugflix.weblog.profile.controller;
 
 import com.bugflix.weblog.profile.dto.ProfileResponse;
+import com.bugflix.weblog.profile.dto.ProfileUpdateRequest;
 import com.bugflix.weblog.profile.service.ProfileServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Tag(name = "Profile API", description = "Profile 관련 API")
@@ -50,4 +48,17 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.getOthersProfile(nickname, userDetails));
     }
 
+
+    /***
+     * 사용자 Profile 수정
+     *
+     * @param userDetails - 사용자 정보
+     */
+    @PutMapping("/v1/profile")
+    @Operation(summary = "프로필 수정", description = "프로필 정보를 수정합니다.")
+    public ResponseEntity<Void> updateProfile(@RequestBody ProfileUpdateRequest request,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+        profileService.updateProfile(request, userDetails);
+        return ResponseEntity.ok().build();
+    }
 }
