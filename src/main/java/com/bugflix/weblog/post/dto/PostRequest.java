@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Getter
-@Schema(description = "로그인, 토큰 재발급 요청 DTO", requiredProperties = {"content", "url"})
+@Schema(description = "Post 저장/수정 DTO", requiredProperties = {"title", "content"})
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostRequest {
 
