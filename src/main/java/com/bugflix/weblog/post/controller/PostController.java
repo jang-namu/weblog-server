@@ -180,6 +180,7 @@ public class PostController {
      * @return Request 조건에 일치하는 Post 미리보기 List
      */
     @GetMapping("/v1/posts/ranks")
+    @Operation(summary = "인기 Post 미리보기 조회", description = "Dashboard Main Page에 들어갈 주간/월간/연간 인기포스트를 조회합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@Valid @ModelAttribute PostPopularRequest postPopularRequest) {
         return ResponseEntity.ok(postServiceImpl.getPopularPosts(postPopularRequest));
     }
@@ -191,6 +192,7 @@ public class PostController {
      * @return Request 조건에 일치하는 Post 미리보기 List
      */
     @GetMapping("/v1/search/posts")
+    @Operation(summary = "Post 검색", description = "태그+내용, 내용, 태그 중 하나를 선택하여 Post를 검색합니다.")
     public ResponseEntity<List<PostSearchResponse>> searchPost(@Valid @ModelAttribute PostSearchRequest postSearchRequest) {
         return ResponseEntity.ok(postServiceImpl.searchPost(postSearchRequest));
     }
