@@ -1,10 +1,7 @@
 package com.bugflix.weblog.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +24,7 @@ public class SignUpRequest {
     private String password;
 
     @Schema(description = "별명", example = "namu")
+    @Size(min = 2, max = 25)
     @NotNull
     private String nickname;
 

@@ -47,7 +47,8 @@ public class SecurityConfiguration {
             "/api/v1/auths/login",
             "/api/v1/auths/reissue",
             "/api/login/oauth2/code/**",
-            "/api/v1/healthcheck"
+            "/api/v1/healthcheck",
+            "/api/v1/profiles/users/{nickname}",
     };
 
     @Bean

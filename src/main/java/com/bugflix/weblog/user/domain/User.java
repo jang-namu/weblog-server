@@ -5,6 +5,7 @@ import com.bugflix.weblog.comment.domain.Comment;
 import com.bugflix.weblog.common.BaseTimeEntity;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.profile.domain.Profile;
+import com.bugflix.weblog.profile.dto.ProfileUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -67,6 +68,12 @@ public class User extends BaseTimeEntity {
     public User update(String nickname, String picture) {
         this.nickname = nickname;
         this.profile.changeProfileImage(picture);
+        return this;
+    }
+
+    public User updateProfile(ProfileUpdateRequest request) {
+        this.nickname = request.getNickname();
+        this.profile.update(request.getImageUrl(), request.getPhoneNumber());
         return this;
     }
 

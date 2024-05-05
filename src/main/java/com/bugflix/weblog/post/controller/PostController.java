@@ -88,6 +88,20 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getPosts(url));
     }
 
+    /**
+     * 특정 Post의 미리보기를 조회합니다.
+     *
+     * @param postId
+     * @param userDetails
+     * @return 특정 Post 미리보기
+     */
+    @GetMapping("/v1/posts/{postId}/preview")
+    @Operation(summary = "단일 Post 미리보기 조회", description = "Post의 미리보기를 반환합니다.")
+    public ResponseEntity<PostPreviewResponse> getPostPreview(@PathVariable Long postId,
+                                                              @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(postServiceImpl.getPostPreview(postId, userDetails));
+    }
+
     /***
      * 특정 Page 내의 Post 미리보기 전체를 조회합니다.
      *
@@ -100,8 +114,8 @@ public class PostController {
     @Operation(summary = "Post 미리보기 조회", description = "Page내의 Post 미리보기 전체를 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam String url,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreview(url));
-        return ResponseEntity.ok(postServiceImpl.getPostPreview(url, userDetails));
+        if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreviews(url));
+        return ResponseEntity.ok(postServiceImpl.getPostPreviews(url, userDetails));
     }
 
 

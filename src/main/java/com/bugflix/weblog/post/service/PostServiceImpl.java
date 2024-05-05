@@ -21,15 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -154,8 +151,17 @@ public class PostServiceImpl {
         return resultList.stream().map(PostResponse::from).toList();
     }
 
+    @Transactional(readOnly = true)
+    public PostPreviewResponse getPostPreview(Long postId, UserDetails userDetails) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
+        List<String> tags = tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList();
+        return PostPreviewResponse.of(post, tags, post.getUser().getNickname(), likeServiceImpl.isLiked(postId, userId));
+    }
+
     /**
-     * Name : getPostPreview
+     * Name : getPostPreviews
      * Parameter :
      * - String url
      * Return :
@@ -164,52 +170,31 @@ public class PostServiceImpl {
      * Explanation :
      * - 페이지 내의 모든 post 미리 보기 목록 반환
      */
-    public List<PostPreviewResponse> getPostPreview(String url, UserDetails userDetails) {
+    public List<PostPreviewResponse> getPostPreviews(String url) {
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
+        List<Post> posts = postRepository.findByPageUrl(url);
 
-        List<Post> postList = postRepository.findByPageUrl(url);
-
-        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
-
-        for (Post post : postList) {
+        for (Post post : posts) {
             Long postId = post.getPostId();
 
-            PostPreviewResponse postPreview = new PostPreviewResponse(
-                    post,
+            postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
-                    userService.findNicknameByPostId(postId),
-                    likeServiceImpl.isLiked(postId, userId),
-                    post.getCreatedDate(),
-                    post.getModifiedDate(),
-                    likeServiceImpl.countLikes(postId));
-
-            // Todo postId 가 다른 여러 개의 Entity가 입력되었을 때, like Count 가 정상 작동하는지 확인.
-
-            postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
+                    userService.findNicknameByPostId(postId), false));
         }
         return postPreviews;
     }
 
-    public List<PostPreviewResponse> getPostPreview(String url) {
+    public List<PostPreviewResponse> getPostPreviews(String url, UserDetails userDetails) {
         List<PostPreviewResponse> postPreviews = new ArrayList<>();
+        List<Post> posts = postRepository.findByPageUrl(url);
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
 
-        List<Post> postList = postRepository.findByPageUrl(url);
-
-        for (Post post : postList) {
+        for (Post post : posts) {
             Long postId = post.getPostId();
 
-            PostPreviewResponse postPreview = new PostPreviewResponse(
-                    post,
+            postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
-                    userService.findNicknameByPostId(postId),
-                    false,
-                    post.getCreatedDate(),
-                    post.getModifiedDate(),
-                    likeServiceImpl.countLikes(postId));
-
-            // Todo postId 가 다른 여러 개의 Entity가 입력되었을 때, like Count 가 정상 작동하는지 확인.
-
-            postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
+                    userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
         }
         return postPreviews;
     }
