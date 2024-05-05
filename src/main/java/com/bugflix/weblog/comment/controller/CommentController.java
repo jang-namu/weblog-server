@@ -70,17 +70,6 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    /***
-     * 특정 Page에 작성된 댓글 전체를 조회합니다.
-     *
-     * @param pageUrl 댓글 조회를 요청한 Page의 URL.
-     * @return 특정 Page에 작성된 댓글 List
-     */
-    @Operation(summary = "댓글 조회(URL)", description = "URL에 작성된 댓글 조회 ")
-    @GetMapping("/v1/comments")
-    public ResponseEntity<List<CommentResponse>> getCommentsByUrl(@RequestParam String pageUrl) {
-        return ResponseEntity.ok(commentService.getCommentsByUrl(pageUrl));
-    }
 
     /***
      * 특정 Post에 작성된 댓글 전체를 조회합니다.

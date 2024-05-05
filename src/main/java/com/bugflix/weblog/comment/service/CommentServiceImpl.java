@@ -92,16 +92,6 @@ public class CommentServiceImpl {
         commentRepository.delete(comment);
     }
 
-    public List<CommentResponse> getCommentsByUrl(String url) {
-        List<CommentResponse> commentResponses = new ArrayList<>();
-        List<Comment> comments = commentRepository.findAllByPostPageUrl(url);
-
-        for (Comment comment : comments) {
-            User user = comment.getUser();
-            commentResponses.add(CommentResponse.of(comment, user, user.getProfile()));
-        }
-        return commentResponses;
-    }
 
     public List<CommentResponse> getCommentsByPostId(Long postId) {
         List<CommentResponse> commentResponses = new ArrayList<>();
