@@ -77,7 +77,7 @@ public class SecurityConfiguration {
                             .requestMatchers(PERMIT_TO_USER).hasRole("USER")
                             .requestMatchers(PERMIT_TO_ALL).permitAll()
                             .requestMatchers(SWAGGER_URL_ARRAY).permitAll()
-                            .anyRequest().hasRole("USER");
+                            .anyRequest().anonymous();
                 })
 
                 .oauth2Login(oauth -> oauth

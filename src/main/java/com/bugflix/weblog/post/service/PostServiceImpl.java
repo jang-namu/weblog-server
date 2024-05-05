@@ -2,6 +2,7 @@ package com.bugflix.weblog.post.service;
 
 import com.bugflix.weblog.common.Errors;
 import com.bugflix.weblog.common.exception.ResourceNotFoundException;
+import com.bugflix.weblog.like.repository.LikeRepository;
 import com.bugflix.weblog.like.service.LikeServiceImpl;
 import com.bugflix.weblog.page.domain.Page;
 import com.bugflix.weblog.page.repository.PageRepository;
@@ -39,6 +40,7 @@ public class PostServiceImpl {
     private final TagRepository tagRepository;
     private final TagServiceImpl tagService;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
 
     /**
@@ -161,7 +163,7 @@ public class PostServiceImpl {
     }
 
     @Transactional(readOnly = true)
-    public PostPreviewProfileResponse getPostPreviewWithProfileImage(Long postId, UserDetails userDetails) {
+    public PostPreviewProfileResponse getPostPreviewWithProfile(Long postId, UserDetails userDetails) {
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
@@ -218,7 +220,7 @@ public class PostServiceImpl {
      * Explanation :
      * - 페이지 내의 모든 post 미리 보기 목록 반환
      */
-    public List<PostPreviewProfileResponse> getPostPreviewsWithProfileImage(String url) {
+    public List<PostPreviewProfileResponse> getPostPreviewsWithProfile(String url) {
         List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
         List<Post> posts = postRepository.findByPageUrl(url);
 
@@ -233,7 +235,7 @@ public class PostServiceImpl {
         return postPreviews;
     }
 
-    public List<PostPreviewProfileResponse> getPostPreviewsWithProfileImage(String url, UserDetails userDetails) {
+    public List<PostPreviewProfileResponse> getPostPreviewsWithProfile(String url, UserDetails userDetails) {
         List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
         List<Post> posts = postRepository.findByPageUrl(url);
         Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
@@ -332,6 +334,45 @@ public class PostServiceImpl {
         return postPreviews;
     }
 
+    public List<PostPreviewProfileResponse> getMyPostPreviewWithProfile(String url, UserDetails userDetails,
+                                                                Integer offset, Integer limit) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByPageUrlAndUserUserId(url, userId,
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
+        for (Post post : posts) {
+            Long postId = post.getPostId();
+
+            postPreviews.add(PostPreviewProfileResponse.of(post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    likeServiceImpl.isLiked(postId, userId)));
+        }
+        return postPreviews;
+    }
+
+    public List<PostPreviewProfileResponse> getMyPostPreviewWithProfile(UserDetails userDetails, Integer offset, Integer limit) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByUserUserId(userId,
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
+        posts.forEach(post -> {
+            Long postId = post.getPostId();
+            postPreviews.add(PostPreviewProfileResponse.of(post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    likeServiceImpl.isLiked(postId, userId)));
+        });
+
+        return postPreviews;
+    }
+
     public List<PostPreviewResponse> getOthersPostPreviewWithPaging(String nickname, Integer offset, Integer limit) {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
@@ -346,6 +387,28 @@ public class PostServiceImpl {
             postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
                     userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, user.getUserId())));
+        });
+
+        return postPreviews;
+    }
+
+    public List<PostPreviewProfileResponse> getOthersPostPreviewWithProfile(String nickname, Integer offset, Integer limit) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        org.springframework.data.domain.Page<Post> posts = postRepository.findByUserUserId(user.getUserId(),
+                PageRequest.of(offset, limit, strategy));
+
+        List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
+        posts.forEach(post -> {
+            Long postId = post.getPostId();
+            postPreviews.add(PostPreviewProfileResponse.of(
+                    post,
+                    user,
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    likeServiceImpl.isLiked(postId, user.getUserId()))
+            );
         });
 
         return postPreviews;
@@ -402,6 +465,41 @@ public class PostServiceImpl {
             postPreviews.add(postPreview);  // List 에 postPreview Entity 추가
         }
         return postPreviews;
+    }
+
+    public List<PostPreviewProfileResponse> getPopularPostsWithProfile(PostPopularRequest postPopularRequest) {
+        LocalDateTime criterion = LocalDateTime.now().minusDays(postPopularRequest.getType().getValue());
+
+        List<Post> postList = postRepository.findWithPagination(criterion,
+                PageRequest.of(postPopularRequest.getOffset(), postPopularRequest.getLimit()));
+
+        return postList.stream().map(post -> {
+            Long postId = post.getPostId();
+            return PostPreviewProfileResponse.of(
+                    post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    false
+            );
+        }).toList();
+    }
+
+    public List<PostPreviewProfileResponse> getPopularPostsWithProfile(PostPopularRequest postPopularRequest, UserDetails userDetails) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        LocalDateTime criterion = LocalDateTime.now().minusDays(postPopularRequest.getType().getValue());
+
+        List<Post> postList = postRepository.findWithPagination(criterion,
+                PageRequest.of(postPopularRequest.getOffset(), postPopularRequest.getLimit()));
+
+        return postList.stream().map(post -> {
+            Long postId = post.getPostId();
+            return PostPreviewProfileResponse.of(
+                    post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    likeServiceImpl.isLiked(postId, userId)
+            );
+        }).toList();
     }
 
     public List<PostSearchResponse> searchPost(PostSearchRequest postSearchRequest) {

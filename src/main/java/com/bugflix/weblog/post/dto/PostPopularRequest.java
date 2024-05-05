@@ -13,7 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PostPopularRequest {
 
-    @Schema(description = "WEEKLEY/MONTHLY/YEARLY 중 어떤 방식으로 조회할 것인지 선택", example = "WEEKLEY")
+    @Schema(description = "WEEKLEY/MONTHLY/YEARLY 중 어떤 방식으로 조회할 것인지 선택", example = "WEEKLY")
     @NotNull
     private Period type;
 
