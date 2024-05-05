@@ -89,18 +89,33 @@ public class PostController {
     }
 
     /**
-     * 특정 Post의 미리보기를 조회합니다.
+     * (캔버스)특정 Post의 미리보기를 조회합니다.
      *
      * @param postId
      * @param userDetails
      * @return 특정 Post 미리보기
      */
     @GetMapping("/v1/posts/{postId}/preview")
-    @Operation(summary = "단일 Post 미리보기 조회", description = "Post의 미리보기를 반환합니다.")
+    @Operation(summary = "(캔버스)단일 Post 미리보기 조회", description = "Post의 미리보기를 반환합니다.")
     public ResponseEntity<PostPreviewResponse> getPostPreview(@PathVariable Long postId,
                                                               @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(postServiceImpl.getPostPreview(postId, userDetails));
     }
+
+    /**
+     * (캔버스)특정 Post의 미리보기를 조회합니다.
+     *
+     * @param postId
+     * @param userDetails
+     * @return 특정 Post 미리보기
+     */
+    @GetMapping("/v2/posts/{postId}/preview")
+    @Operation(summary = "(캔버스)단일 Post 미리보기 조회 Ver.2", description = "Post의 미리보기를 반환합니다. 작성자 프로필을 포함합니다.")
+    public ResponseEntity<PostPreviewProfileResponse> getPostPreviewWithProfileImage(@PathVariable Long postId,
+                                                              @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(postServiceImpl.getPostPreviewWithProfileImage(postId, userDetails));
+    }
+
 
     /***
      * 특정 Page 내의 Post 미리보기 전체를 조회합니다.
@@ -118,6 +133,21 @@ public class PostController {
         return ResponseEntity.ok(postServiceImpl.getPostPreviews(url, userDetails));
     }
 
+    /***
+     * 특정 Page 내의 Post 미리보기 전체를 조회합니다.
+     *
+     * @param url Post 미리보기를 조회할 Page의 Url
+     * @param userDetails 조회를 요청한 사용자의 정보;
+     *                    사용자에게 특정 Page 내의 Post 미리보기 조회 권한이 있는지 검사하기 위해 필요합니다.
+     * @return 특정 Page 내의 Post 미리보기 전체 List
+     */
+    @GetMapping("/v2/posts/preview")
+    @Operation(summary = "Post 미리보기 조회 Ver.2", description = "Page내의 Post 미리보기 전체를 반환합니다. 작성자 프로필을 포함합니다.")
+    public ResponseEntity<List<PostPreviewProfileResponse>> getPostPreviewWithProfileImage(@RequestParam String url,
+                                                                    @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreviewsWithProfileImage(url));
+        return ResponseEntity.ok(postServiceImpl.getPostPreviewsWithProfileImage(url, userDetails));
+    }
 
     /***
      * 특정 Page에서 현재 사용자의 Post 미리보기를 조회합니다.

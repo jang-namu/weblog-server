@@ -160,6 +160,15 @@ public class PostServiceImpl {
         return PostPreviewResponse.of(post, tags, post.getUser().getNickname(), likeServiceImpl.isLiked(postId, userId));
     }
 
+    @Transactional(readOnly = true)
+    public PostPreviewProfileResponse getPostPreviewWithProfileImage(Long postId, UserDetails userDetails) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
+        List<String> tags = tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList();
+        return PostPreviewProfileResponse.of(post, post.getUser(), tags, likeServiceImpl.isLiked(postId, userId));
+    }
+
     /**
      * Name : getPostPreviews
      * Parameter :
@@ -195,6 +204,47 @@ public class PostServiceImpl {
             postPreviews.add(PostPreviewResponse.of(post,
                     tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
                     userService.findNicknameByPostId(postId), likeServiceImpl.isLiked(postId, userId)));
+        }
+        return postPreviews;
+    }
+
+    /**
+     * Name : getPostPreviews
+     * Parameter :
+     * - String url
+     * Return :
+     * - ArrayList<PostPreviewResponse>
+     * <p>
+     * Explanation :
+     * - 페이지 내의 모든 post 미리 보기 목록 반환
+     */
+    public List<PostPreviewProfileResponse> getPostPreviewsWithProfileImage(String url) {
+        List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
+        List<Post> posts = postRepository.findByPageUrl(url);
+
+        for (Post post : posts) {
+            Long postId = post.getPostId();
+
+            postPreviews.add(PostPreviewProfileResponse.of(post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    false));
+        }
+        return postPreviews;
+    }
+
+    public List<PostPreviewProfileResponse> getPostPreviewsWithProfileImage(String url, UserDetails userDetails) {
+        List<PostPreviewProfileResponse> postPreviews = new ArrayList<>();
+        List<Post> posts = postRepository.findByPageUrl(url);
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+
+        for (Post post : posts) {
+            Long postId = post.getPostId();
+
+            postPreviews.add(PostPreviewProfileResponse.of(post,
+                    post.getUser(),
+                    tagRepository.findTagsByPostPostId(postId).stream().map(Tag::getTagContent).toList(),
+                    likeServiceImpl.isLiked(postId, userId)));
         }
         return postPreviews;
     }
