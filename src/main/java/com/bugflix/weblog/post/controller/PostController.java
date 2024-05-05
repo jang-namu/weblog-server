@@ -96,7 +96,7 @@ public class PostController {
      * @return 특정 Post 미리보기
      */
     @GetMapping("/v1/posts/{postId}/preview")
-    @Operation(summary = "(캔버스)단일 Post 미리보기 조회", description = "Post의 미리보기를 반환합니다.")
+    @Operation(deprecated = true, summary = "(캔버스)단일 Post 미리보기 조회", description = "Post의 미리보기를 반환합니다.")
     public ResponseEntity<PostPreviewResponse> getPostPreview(@PathVariable Long postId,
                                                               @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(postServiceImpl.getPostPreview(postId, userDetails));
@@ -126,7 +126,7 @@ public class PostController {
      * @return 특정 Page 내의 Post 미리보기 전체 List
      */
     @GetMapping("/v1/posts/preview")
-    @Operation(summary = "Post 미리보기 조회", description = "Page내의 Post 미리보기 전체를 반환합니다.")
+    @Operation(deprecated = true, summary = "Post 미리보기 조회", description = "Page내의 Post 미리보기 전체를 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getPostPreview(@RequestParam String url,
                                                                     @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPostPreviews(url));
@@ -157,7 +157,7 @@ public class PostController {
      * @return 특정 Page에서 현재 사용자의 Post 미리보기 전체 List
      */
     @GetMapping("/v1/posts/mine")
-    @Operation(summary = "내 Post 미리보기 목록 조회 Ver.1", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
+    @Operation(deprecated = true, summary = "내 Post 미리보기 목록 조회 Ver.1", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
                                                                   "포함되어 있지 않은 경우에는 내가 작성한 포스트 목록을 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getMyPostPreview(@RequestParam(name = "url", required = false) String url,
                                                                       @AuthenticationPrincipal UserDetails userDetails) {
@@ -175,7 +175,7 @@ public class PostController {
      * @return 특정 Page에서 현재 사용자의 Post 미리보기 전체 List
      */
     @GetMapping("/v2/posts/mine")
-    @Operation(summary = "내 Post 미리보기 목록 조회 Ver.2", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
+    @Operation(deprecated = true, summary = "내 Post 미리보기 목록 조회 Ver.2", description = "url을 포함하는 경우 해당 주소에 작성된 포스트 내용을, " +
                                                                   "포함되어 있지 않은 경우에는 내가 작성한 포스트 목록을 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getMyPostPreviewWithPaging(@RequestParam(name = "url", required = false) String url,
                                                                       @RequestParam Integer offset,
@@ -216,7 +216,7 @@ public class PostController {
      * @return 다른 사용자의 Post 미리보기 전체 List
      */
     @GetMapping("/v2/posts/users/{nickname}")
-    @Operation(summary = "다른 사람의 Post 미리보기 목록 조회", description = "다른 사람이 작성한 포스트 목록을 반환합니다.")
+    @Operation(deprecated = true, summary = "다른 사람의 Post 미리보기 목록 조회", description = "다른 사람이 작성한 포스트 목록을 반환합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getOthersPostPreviewWithPaging(@RequestParam Integer offset,
                                                                                 @RequestParam Integer limit,
                                                                                 @PathVariable String nickname) {
@@ -232,7 +232,7 @@ public class PostController {
      * @return 다른 사용자의 Post 미리보기 전체 List
      */
     @GetMapping("/v3/posts/users/{nickname}")
-    @Operation(summary = "다른 사람의 Post 미리보기 목록 조회", description = "다른 사람이 작성한 포스트 목록을 반환합니다. 작성자 프로필을 포함합니다.")
+    @Operation(summary = "다른 사람의 Post 미리보기 목록 조회 Ver.3", description = "다른 사람이 작성한 포스트 목록을 반환합니다. 작성자 프로필을 포함합니다.")
     public ResponseEntity<List<PostPreviewProfileResponse>> getOthersPostPreviewWithProfile(@RequestParam Integer offset,
                                                                                     @RequestParam Integer limit,
                                                                                     @PathVariable String nickname) {
@@ -262,7 +262,7 @@ public class PostController {
      * @return Request 조건에 일치하는 Post 미리보기 List
      */
     @GetMapping("/v1/posts/ranks")
-    @Operation(summary = "인기 Post 미리보기 조회", description = "Dashboard Main Page에 들어갈 주간/월간/연간 인기포스트를 조회합니다.")
+    @Operation(deprecated = true, summary = "인기 Post 미리보기 조회", description = "Dashboard Main Page에 들어갈 주간/월간/연간 인기포스트를 조회합니다.")
     public ResponseEntity<List<PostPreviewResponse>> getPopularPosts(@Valid @ModelAttribute PostPopularRequest postPopularRequest) {
         return ResponseEntity.ok(postServiceImpl.getPopularPosts(postPopularRequest));
     }
@@ -274,7 +274,7 @@ public class PostController {
      * @return Request 조건에 일치하는 Post 미리보기 List
      */
     @GetMapping("/v2/posts/ranks")
-    @Operation(summary = "인기 Post 미리보기 조회", description = "Dashboard Main Page에 들어갈 주간/월간/연간 인기포스트를 조회합니다. 작성자 프로필을 포함합니다.")
+    @Operation(summary = "인기 Post 미리보기 조회 Ver.2", description = "Dashboard Main Page에 들어갈 주간/월간/연간 인기포스트를 조회합니다. 작성자 프로필을 포함합니다.")
     public ResponseEntity<List<PostPreviewProfileResponse>> getPopularPostsWithProfile(@Valid @ModelAttribute PostPopularRequest postPopularRequest,
                                                                                        @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) return ResponseEntity.ok(postServiceImpl.getPopularPostsWithProfile(postPopularRequest));
