@@ -47,8 +47,7 @@ public class FollowController {
      */
     @GetMapping("/v1/follows/mine/follower")
     @Operation(summary = "follower 조회", description = "현재 사용자를 follow하는 follower 목록을 조회합니다.")
-    public ResponseEntity<List<FollowResponse>> searchFollowing(@AuthenticationPrincipal UserDetails userDetails) {
-
+    public ResponseEntity<List<FollowResponse.MyFollowResponse>> searchFollowing(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(followService.searchFollowers(userDetails));
     }
 

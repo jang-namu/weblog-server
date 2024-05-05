@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,19 +33,22 @@ public class FollowServiceImpl {
     }
 
 
-    public List<FollowResponse> searchFollowers(UserDetails userDetails) {
+    public List<FollowResponse.MyFollowResponse> searchFollowers(UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
-        List<Follow> follows = followRepository.findByFollowing(user);
-        return follows.stream()
+
+        List<Follow> toFollows = followRepository.findByFollowing(user);
+        List<Follow> fromFollows = followRepository.findByFollower(user);
+        Set<Long> followings = fromFollows.stream().map(Follow::getFollowing).map(User::getUserId).collect(Collectors.toSet());
+        return toFollows.stream()
                 .map(Follow::getFollower)
-                .map(follower -> FollowResponse.of(follower, follower.getProfile()))
+                // User - Profile 1대1 매핑 (Default=EAGER)
+                .map(follower -> FollowResponse.MyFollowResponse.of(follower, follower.getProfile(), followings.contains(follower.getUserId())))
                 .toList();
     }
 
     public List<FollowResponse> searchFollwings(UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
         List<Follow> follows = followRepository.findByFollower(user);
-        ArrayList<FollowResponse> followResponses = new ArrayList<>();
 
         return follows.stream()
                 .map(Follow::getFollowing)
@@ -67,7 +70,6 @@ public class FollowServiceImpl {
         User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
         List<Follow> follows = followRepository.findByFollower(user);
-        ArrayList<FollowResponse> followResponses = new ArrayList<>();
 
         return follows.stream()
                 .map(Follow::getFollowing)
