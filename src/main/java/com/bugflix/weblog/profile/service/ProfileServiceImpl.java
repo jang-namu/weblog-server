@@ -35,19 +35,19 @@ public class ProfileServiceImpl {
     }
 
     public ProfileResponse getOthersProfile(String nickname) {
-        User user = userRepository.findByNickname(nickname)
+        User targetUser = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
-        Profile profile = profileRepository.findByUserUserId(user.getUserId())
+        Profile profile = profileRepository.findByUserUserId(targetUser.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.PROFILE_NOT_FOUND));
 
-        return ProfileResponse.of(user, profile);
+        return ProfileResponse.of(targetUser, profile);
     }
 
     public ProfileResponse getOthersProfile(String nickname, UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
         User targetUser = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.USER_NOT_FOUND));
-        Profile profile = profileRepository.findByUserUserId(user.getUserId())
+        Profile profile = profileRepository.findByUserUserId(targetUser.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.PROFILE_NOT_FOUND));
         boolean followed = followRepository.existsByFollowerAndFollowing(user, targetUser);
 
