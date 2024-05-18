@@ -6,12 +6,14 @@ import com.bugflix.weblog.follow.domain.Follow;
 import com.bugflix.weblog.follow.dto.FollowRequest;
 import com.bugflix.weblog.follow.dto.FollowResponse;
 import com.bugflix.weblog.follow.repository.FollowRepository;
+import com.bugflix.weblog.notify.servoce.NotificationService;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -22,14 +24,16 @@ import java.util.stream.Collectors;
 public class FollowServiceImpl {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
-
+    @Transactional
     public void addFollow(FollowRequest followRequest, UserDetails userDetails) {
         User follower = ((CustomUserDetails) userDetails).getUser();
         User following = userRepository.findByNickname(followRequest.getNickname()).orElseThrow(()
                 -> new IllegalArgumentException("invalid nickname"));
         Follow follow = new Follow(follower, following);
         followRepository.save(follow);
+        notificationService.notifyFollow(following, follower);
     }
 
 
