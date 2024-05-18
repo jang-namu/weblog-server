@@ -6,7 +6,7 @@ import com.bugflix.weblog.follow.domain.Follow;
 import com.bugflix.weblog.follow.dto.FollowRequest;
 import com.bugflix.weblog.follow.dto.FollowResponse;
 import com.bugflix.weblog.follow.repository.FollowRepository;
-import com.bugflix.weblog.notify.servoce.NotificationService;
+import com.bugflix.weblog.notify.service.NotificationService;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
 import com.bugflix.weblog.user.domain.User;
 import com.bugflix.weblog.user.repository.UserRepository;

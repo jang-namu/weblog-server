@@ -5,7 +5,7 @@ import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
-import com.bugflix.weblog.notify.servoce.NotificationService;
+import com.bugflix.weblog.notify.service.NotificationService;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;

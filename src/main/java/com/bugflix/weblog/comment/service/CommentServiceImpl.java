@@ -7,7 +7,7 @@ import com.bugflix.weblog.comment.repository.CommentRepository;
 import com.bugflix.weblog.common.Errors;
 import com.bugflix.weblog.common.exception.NoOwnershipException;
 import com.bugflix.weblog.common.exception.ResourceNotFoundException;
-import com.bugflix.weblog.notify.servoce.NotificationService;
+import com.bugflix.weblog.notify.service.NotificationService;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;

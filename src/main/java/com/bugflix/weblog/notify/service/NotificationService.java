@@ -1,4 +1,4 @@
-package com.bugflix.weblog.notify.servoce;
+package com.bugflix.weblog.notify.service;
 
 import com.bugflix.weblog.common.Errors;
 import com.bugflix.weblog.common.exception.NoOwnershipException;
@@ -11,6 +11,7 @@ import com.bugflix.weblog.user.domain.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,9 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class NotificationService {
     private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private static final Long DEFAULT_TIMEOUT = 120L * 1000;
+
+    @Value("${spring.sse.connection-time}")
+    private long DEFAULT_TIMEOUT;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final RedisTemplate<String, Object> redisTemplate;

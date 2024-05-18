@@ -1,7 +1,7 @@
 package com.bugflix.weblog.notify.controller;
 
 import com.bugflix.weblog.notify.dto.NotificationResponse;
-import com.bugflix.weblog.notify.servoce.NotificationService;
+import com.bugflix.weblog.notify.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
