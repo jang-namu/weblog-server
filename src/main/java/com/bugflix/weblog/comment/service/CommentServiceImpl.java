@@ -7,6 +7,7 @@ import com.bugflix.weblog.comment.repository.CommentRepository;
 import com.bugflix.weblog.common.Errors;
 import com.bugflix.weblog.common.exception.NoOwnershipException;
 import com.bugflix.weblog.common.exception.ResourceNotFoundException;
+import com.bugflix.weblog.notify.servoce.NotificationService;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class CommentServiceImpl {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
     /**
      * Name : saveComment
@@ -40,19 +43,22 @@ public class CommentServiceImpl {
      * - 성공 : void
      * - 실패 : Exception 반환
      */
+    @Transactional
     public void saveComment(CommentRequest commentRequest, UserDetails userDetails) {
         User user = ((CustomUserDetails) userDetails).getUser();
         Post post = postRepository.findById(commentRequest.getPostId())
                 .orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
 
         Comment comment;
-        if (commentRequest.getParentCommentId() != null) {
+        if (commentRequest.getParentCommentId() == null) {
+            comment = Comment.of(commentRequest.getContent(), user, post);
+            notificationService.notifyComment(post.getUser(), user);
+        } else {
             Comment parentComment = commentRepository.findById(commentRequest.getParentCommentId())
                     .orElseThrow(() -> new ResourceNotFoundException(Errors.PARENT_COMMENT_NOT_FOUND));
             valdiateIsOnSamePost(post, parentComment);
             comment = Comment.of(commentRequest.getContent(), user, post, parentComment);
-        } else {
-            comment = Comment.of(commentRequest.getContent(), user, post);
+            notificationService.notifyReply(parentComment.getUser(), user);
         }
 
         commentRepository.save(comment);
