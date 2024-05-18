@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "notification_tb")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Notification extends BaseTimeEntity {
@@ -33,6 +33,10 @@ public class Notification extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Boolean isRead;
+
+    public void read() {
+        isRead = true;
+    }
 
     public enum NotificationType {
         SYSTEM, COMMENT, REPLY, FOLLOW;

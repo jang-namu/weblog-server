@@ -1,5 +1,8 @@
 package com.bugflix.weblog.notify.servoce;
 
+import com.bugflix.weblog.common.Errors;
+import com.bugflix.weblog.common.exception.NoOwnershipException;
+import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.notify.domain.Notification;
 import com.bugflix.weblog.notify.dto.NotificationResponse;
 import com.bugflix.weblog.notify.repository.NotificationRepository;
@@ -9,16 +12,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,7 +66,10 @@ public class NotificationService {
         });
         emitter.onCompletion(() -> this.emitters.remove(memberId));
 
-        sendNotification("connection created", "", user, user, Notification.NotificationType.SYSTEM);
+//        sendNotification("connection created", "", user, user, Notification.NotificationType.SYSTEM);
+        Notification notification = Notification.of("connection created", "", user, user, Notification.NotificationType.SYSTEM);
+        redisTemplate.convertAndSend("notificationTopic", NotificationResponse.from(notification));
+
 
         return emitter;
     }
@@ -146,4 +158,32 @@ public class NotificationService {
 
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<NotificationResponse> getNotifications(UserDetails userDetails, Boolean isRead, Integer offset, Integer limit) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Sort strategy = Sort.by(Sort.Direction.DESC, "createdDate");
+
+        Page<Notification> notifications = notificationRepository.findByReceiverUserIdWhereNotRead(userId, isRead,
+                PageRequest.of(offset, limit, strategy));
+        log.info("notifications size: " + notifications.getTotalElements());
+        return notifications.stream().map(NotificationResponse::from).toList();
+    }
+
+    public void readNotifcations(UserDetails userDetails, Long notificationId) {
+        Long userId = ((CustomUserDetails) userDetails).getUser().getUserId();
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new ResourceNotFoundException(Errors.NOTIFICATION_NOT_FOUND));
+        validateIsOwnedNotification(notification, userId);
+
+        notification.read();
+        notificationRepository.save(notification);
+    }
+
+    public void validateIsOwnedNotification(Notification notification, Long userId) {
+        if (!Objects.equals(notification.getReceiver().getUserId(), userId)) {
+            throw new NoOwnershipException(Errors.IS_NOT_MINE);
+        }
+    }
 }
+
