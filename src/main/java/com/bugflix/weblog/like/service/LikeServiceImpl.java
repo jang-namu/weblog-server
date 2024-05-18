@@ -5,9 +5,11 @@ import com.bugflix.weblog.common.exception.ResourceNotFoundException;
 import com.bugflix.weblog.like.domain.Like;
 import com.bugflix.weblog.like.dto.LikeStatusResponse;
 import com.bugflix.weblog.like.repository.LikeRepository;
+import com.bugflix.weblog.notify.servoce.NotificationService;
 import com.bugflix.weblog.post.domain.Post;
 import com.bugflix.weblog.post.repository.PostRepository;
 import com.bugflix.weblog.security.domain.CustomUserDetails;
+import com.bugflix.weblog.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class LikeServiceImpl {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
     public boolean isLiked(Long postId, Long userId) {
         return likeRepository.existsLikeById_PostIdAndId_UserId(postId, userId);
@@ -46,17 +49,18 @@ public class LikeServiceImpl {
     @Transactional
     public LikeStatusResponse changeLikeStatus(Long postId, UserDetails userDetails) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException(Errors.POST_NOT_FOUND));
-        Long userId = ((CustomUserDetails)userDetails).getUser().getUserId();
+        User user = ((CustomUserDetails)userDetails).getUser();
 
-        Like like = likeRepository.findById_UserIdAndId_PostId(userId, postId).orElse(null);
+        Like like = likeRepository.findById_UserIdAndId_PostId(user.getUserId(), postId).orElse(null);
 
         if (like != null) {
             likeRepository.delete(like);      // 본인의 Like 상태 변경 Logic
             post.setUnLike();
             return new LikeStatusResponse(likeRepository.countById_PostId(postId), false);
         }
-        likeRepository.save(new Like(userId, postId));
+        likeRepository.save(new Like(user.getUserId(), postId));
         post.setLike();
+        notificationService.notifyLike(post.getUser(), user);
         return new LikeStatusResponse(likeRepository.countById_PostId(postId), true);
 
     }
