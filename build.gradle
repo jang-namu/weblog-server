@@ -19,7 +19,7 @@ jib {
 		image = 'ubuntu/jre:17-22.04_44'
 		platforms {
 			platform {
-				architecture = "arm64"
+				architecture = "amd64"
 				os = "linux"
 			}
 		}
