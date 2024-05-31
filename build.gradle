@@ -16,7 +16,7 @@ java {
 
 jib {
 	from {
-		image = 'ubuntu/jre:17-22.04_44'
+		image = 'eclipse-temurin:17.0.10_7-jre-alpine'
 		platforms {
 			platform {
 				architecture = "amd64"
