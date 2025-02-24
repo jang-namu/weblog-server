@@ -8,7 +8,7 @@ Scrabler, 웹 브라우저에서 메모를 작성하고 지식을 체계화할 �
 - **배포 URL**: https://scrabler.com (폐쇄)
 
 ## 🛠 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/2d9e3519-4f10-4bd0-87f8-43747e9ec6f0)
+![image](https://github.com/user-attachments/assets/0e842b6d-91ba-4df1-8cf7-6d20d2bf4d2f)
 
 ## 🔧 기술 스택
 
